@@ -7,6 +7,6 @@ import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
 class Cash4Life : XGdxGame() {
     override fun initGame(): Scene {
         splashTransition = SceneTransitions.fade(1f)
-        return Scene()
+        return MainScene()
     }
 }

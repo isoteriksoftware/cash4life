@@ -17,7 +17,6 @@ import io.github.isoteriktech.xgdx.utils.GameWorldUnits
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirection
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
 
-
 class DoubleCashSplash : Scene() {
     private var btnSound: Button? = null
 

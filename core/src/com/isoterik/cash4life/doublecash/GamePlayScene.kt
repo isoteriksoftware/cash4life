@@ -69,7 +69,7 @@ class GamePlayScene : Scene() {
                 64f)
 
         mainCamera.setup(StretchViewport(this.gameWorldUnits.getWorldWidth(), this.gameWorldUnits.getWorldHeight()))
-        setupWorldCanvas(mainCamera.viewport)
+        setupAnimationCanvas(mainCamera.viewport)
 
         canvas = Stage(StretchViewport(gameWorldUnits.screenWidth, gameWorldUnits.screenHeight))
 

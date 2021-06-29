@@ -1,0 +1,14 @@
+Python
+Erlang
+Java
+Perl
+Pascal
+Cobol
+Haskell
+Scala
+BASIC
+LISP
+Fortran
+Lua
+Scheme
+Malbolge

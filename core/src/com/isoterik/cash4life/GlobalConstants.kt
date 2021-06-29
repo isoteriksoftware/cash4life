@@ -8,4 +8,7 @@ object GlobalConstants {
     const val DOUBLE_CASH_ASSETS_HOME = "doublecash"
     const val DOUBLE_CASH_SKIN        = "$DOUBLE_CASH_ASSETS_HOME/skin/ui.json"
     const val DOUBLE_CASH_PREFERENCES = "double_cash_app_preferences"
+
+    // Cash Puzzles Config
+    const val CASH_PUZZLES_ASSETS_HOME = "cashpuzzles"
 }

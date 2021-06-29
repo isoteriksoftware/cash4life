@@ -98,7 +98,7 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-        api "io.github.isoteriktech:xgdx:1.2.1"
+        api "io.github.isoteriktech:xgdx:1.1.0"
         api "io.github.isoteriktech:xgdx-animation:1.0.0"
         api "io.github.isoteriktech:xgdx-physics2d:1.0.0"
     }

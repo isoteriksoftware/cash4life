@@ -97,7 +97,7 @@ class UIHelper(private val canvas: Stage) {
                     override fun input(text: String) {
                         try {
                             val amount = text.toInt()
-                            if (amount <= balance && amount >= 50) stake.text = text
+                            if (amount in 50..balance) stake.text = text
                         } catch (ignored: Exception) {
                         }
                     }

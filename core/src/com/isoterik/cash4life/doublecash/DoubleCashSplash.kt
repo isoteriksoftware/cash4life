@@ -13,6 +13,7 @@ import com.isoterik.cash4life.PreferenceHelper
 import com.isoterik.cash4life.doublecash.utils.Util
 import io.github.isoteriktech.xgdx.Scene
 import io.github.isoteriktech.xgdx.ui.ActorAnimation
+import io.github.isoteriktech.xgdx.utils.GameWorldUnits
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirection
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
 
@@ -22,7 +23,8 @@ class DoubleCashSplash : Scene() {
 
     private fun setupCamera() {
         canvas = Stage(StretchViewport(Constants.GUI_WIDTH.toFloat(), Constants.GUI_HEIGHT.toFloat()))
-        input.getInputMultiplexer().addProcessor(canvas)
+
+        input.inputMultiplexer.addProcessor(canvas)
     }
 
     private fun setupUI() {

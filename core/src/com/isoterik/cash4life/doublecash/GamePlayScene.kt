@@ -34,7 +34,6 @@ import io.github.isoteriktech.xgdx.x2d.components.debug.BoxDebugRenderer
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirection
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
 
-
 class GamePlayScene : Scene() {
     private val cards: Array<ActorGameObject>
     private val pickedCards: Array<ActorGameObject?>
@@ -69,12 +68,12 @@ class GamePlayScene : Scene() {
         this.gameWorldUnits = GameWorldUnits(Constants.GUI_WIDTH.toFloat(), Constants.GUI_HEIGHT.toFloat(),
                 64f)
 
-        mainCamera.setup(FitViewport(this.gameWorldUnits.getWorldWidth(), this.gameWorldUnits.getWorldHeight()))
+        mainCamera.setup(StretchViewport(this.gameWorldUnits.getWorldWidth(), this.gameWorldUnits.getWorldHeight()))
         setupWorldCanvas(mainCamera.viewport)
 
         canvas = Stage(StretchViewport(gameWorldUnits.screenWidth, gameWorldUnits.screenHeight))
 
-        input.getInputMultiplexer().addProcessor(canvas)
+        input.inputMultiplexer.addProcessor(canvas)
 
         ActorAnimation.instance().setup(gameWorldUnits.screenWidth, gameWorldUnits.screenHeight)
         uiHelper = UIHelper(canvas)
@@ -139,7 +138,8 @@ class GamePlayScene : Scene() {
     }
 
     private fun quit() {
-        this.xGdx.app.exit()
+        //this.xGdx.app.exit()
+        goHome()
     }
 
     private fun pickRandomCards() {
@@ -198,7 +198,8 @@ class GamePlayScene : Scene() {
         }
 
         // Play the sound
-        AudioManager.instance().playSound(this.xGdx.assets.getSound("sfx/cardPlace.ogg"), 1f)
+        AudioManager.instance().playSound(this.xGdx.assets.getSound(
+            "${GlobalConstants.DOUBLE_CASH_ASSETS_HOME}/sfx/cardPlace.ogg"), 1f)
     }
 
     private fun centerCards() {
@@ -430,7 +431,8 @@ class GamePlayScene : Scene() {
         setupCamera()
 
         //setRenderCustomDebugLines(true);
-        setBackgroundColor(Color(.1f, .1f, .2f, 1f))
+        setBackgroundColor(Color(0f, 0f, 0f, 1f))
+
         val bg: GameObject = newSpriteObject(this.xGdx.assets.regionForTexture(
                 "${GlobalConstants.DOUBLE_CASH_ASSETS_HOME}/images/background.png"))
         addGameObject(bg)

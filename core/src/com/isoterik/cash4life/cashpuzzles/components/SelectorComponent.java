@@ -2,11 +2,14 @@ package com.isoterik.cash4life.cashpuzzles.components;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.isoterik.cash4life.cashpuzzles.Cell;
 import com.isoterik.cash4life.cashpuzzles.GamePlayScene;
+import com.isoterik.cash4life.cashpuzzles.Letter;
 import com.isoterik.cash4life.cashpuzzles.WordManager;
 import com.isoterik.cash4life.cashpuzzles.utils.Board;
 import io.github.isoteriktech.xgdx.Component;
+import io.github.isoteriktech.xgdx.GameObject;
 import io.github.isoteriktech.xgdx.Transform;
 import io.github.isoteriktech.xgdx.x2d.components.renderer.SpriteRenderer;
 
@@ -19,12 +22,14 @@ public class SelectorComponent extends Component {
 
     private ArrayList<String> words;
     private Board board;
+    private Array<Cell> selectedWords;
+    private GameObject[][] letters;
 
     private Vector2 initialSize;
     private Vector2 firstTouchPosition;
     private Vector2 mousePos;
     private Vector2 stopDragPosition;
-    private Vector2[] magnitudePositions;
+    private Vector2 magnitudePosition;
 
     private boolean flag = true;
     private boolean doOnce;
@@ -47,10 +52,13 @@ public class SelectorComponent extends Component {
         );
         firstTouchPosition = Vector2.Zero;
 
-        spriteRenderer.setColor(new Color(1,1,1,0.5f));
+        spriteRenderer.setColor(new Color(0,0,0,0.5f));
         spriteRenderer.setVisible(false);
 
         board = GameManager.getInstance().getBoard();
+        letters = LetterManager.getInstance().getLetters();
+        selectedWords = new Array<>();
+        transform.setOrigin(transform.getWidth() / 2, transform.getHeight() / 2);
     }
 
     @Override
@@ -64,7 +72,10 @@ public class SelectorComponent extends Component {
                         mousePos.x,
                         mousePos.y
                 );
-                setMagnitudePositions();
+                magnitudePosition = new Vector2(
+                        firstTouchPosition.x,
+                        firstTouchPosition.y
+                );
                 flag = false;
             }
 
@@ -77,7 +88,7 @@ public class SelectorComponent extends Component {
                 float div = yDelta / xDelta;
                 angle = 90 - (float) Math.toDegrees(Math.atan(div));
 
-                magnitudePos = magnitudePositions[0];
+                magnitudePos = magnitudePosition;
             }
             // 3rd quadrant
             else if (firstTouchPosition.x >= mousePos.x && firstTouchPosition.y >= mousePos.y) {
@@ -86,7 +97,7 @@ public class SelectorComponent extends Component {
                 float div = yDelta / xDelta;
                 angle = 90 + (float) Math.toDegrees(Math.atan(div));
 
-                magnitudePos = magnitudePositions[1];
+                magnitudePos = magnitudePosition;
             }
             // 4th quadrant
             else if (firstTouchPosition.x <= mousePos.x && firstTouchPosition.y >= mousePos.y) {
@@ -95,7 +106,7 @@ public class SelectorComponent extends Component {
                 float div = yDelta / xDelta;
                 angle = 270 - (float) Math.toDegrees(Math.atan(div));
 
-                magnitudePos = magnitudePositions[2];
+                magnitudePos = magnitudePosition;
             }
             // 1st quadrant
             else if (firstTouchPosition.x <= mousePos.x && firstTouchPosition.y <= mousePos.y) {
@@ -104,13 +115,13 @@ public class SelectorComponent extends Component {
                 float div = yDelta / xDelta;
                 angle = 270 + (float) Math.toDegrees(Math.atan(div));
 
-                magnitudePos = magnitudePositions[3];
+                magnitudePos = magnitudePosition;
             }
 
             transform.setRotation(angle);
 
             float magnitude = mousePos.dst(magnitudePos);
-            transform.setSize(transform.getWidth(), Math.max(magnitude, initialSize.y));
+            transform.setSize(transform.getWidth(), Math.max(magnitude, initialSize.y) + initialSize.y / 2);
 
             doOnce = true;
         }
@@ -130,27 +141,6 @@ public class SelectorComponent extends Component {
 
     public void setSize(float size) {
         this.size = size;
-    }
-
-    private void setMagnitudePositions() {
-        magnitudePositions = new Vector2[]{
-                new Vector2(
-                        firstTouchPosition.x + (initialSize.x / 2),
-                        firstTouchPosition.y - (initialSize.x / 2)
-                ),
-                new Vector2(
-                        firstTouchPosition.x,
-                        firstTouchPosition.y + (initialSize.y / 2f)
-                ),
-                new Vector2(
-                        firstTouchPosition.x - (initialSize.x / 2),
-                        firstTouchPosition.y + (initialSize.x / 2)
-                ),
-                new Vector2(
-                        firstTouchPosition.x,
-                        firstTouchPosition.y - (initialSize.y / 2f)
-                )
-        };
     }
 
     private boolean withinBounds(Vector2 target, Vector2 primary) {
@@ -210,13 +200,16 @@ public class SelectorComponent extends Component {
         int stopRow = stop.getRow(), stopColumn = stop.getColumn();
 
         stopDragPosition = stop.getPosition();
+        selectedWords.clear();
 
         // Vertical up
         if (startColumn == stopColumn && startRow > stopRow) {
             StringBuilder selection = new StringBuilder();
             int currPosX = startRow;
             while (currPosX >= stopRow) {
-                char letter = cells[currPosX][startColumn].getLetter();
+                Cell cell = cells[currPosX][startColumn];
+                selectedWords.add(cell);
+                char letter = cell.getLetter();
                 selection.append(letter);
                 --currPosX;
             }
@@ -228,7 +221,9 @@ public class SelectorComponent extends Component {
             StringBuilder selection = new StringBuilder();
             int currPosX = startRow;
             while (currPosX <= stopRow) {
-                char letter = cells[currPosX][startColumn].getLetter();
+                Cell cell = cells[currPosX][startColumn];
+                selectedWords.add(cell);
+                char letter = cell.getLetter();
                 selection.append(letter);
                 ++currPosX;
             }
@@ -240,7 +235,9 @@ public class SelectorComponent extends Component {
             StringBuilder selection = new StringBuilder();
             int currPosY = startColumn;
             while (currPosY <= stopColumn) {
-                char letter = cells[startRow][currPosY].getLetter();
+                Cell cell = cells[startRow][currPosY];
+                selectedWords.add(cell);
+                char letter = cell.getLetter();
                 selection.append(letter);
                 ++currPosY;
             }
@@ -252,7 +249,9 @@ public class SelectorComponent extends Component {
             StringBuilder selection = new StringBuilder();
             int currPosY = startColumn;
             while (currPosY >= stopColumn) {
-                char letter = cells[startRow][currPosY].getLetter();
+                Cell cell = cells[startRow][currPosY];
+                selectedWords.add(cell);
+                char letter = cell.getLetter();
                 selection.append(letter);
                 --currPosY;
             }
@@ -267,7 +266,9 @@ public class SelectorComponent extends Component {
                     StringBuilder selection = new StringBuilder();
                     int currPosX = startRow, currPosY = startColumn;
                     while (currPosX >= stopRow && currPosY <= stopColumn) {
-                        char letter = cells[currPosX][currPosY].getLetter();
+                        Cell cell = cells[currPosX][currPosY];
+                        selectedWords.add(cell);
+                        char letter = cell.getLetter();
                         selection.append(letter);
                         --currPosX; ++currPosY;
                     }
@@ -284,7 +285,9 @@ public class SelectorComponent extends Component {
                     StringBuilder selection = new StringBuilder();
                     int currPosX = startRow, currPosY = startColumn;
                     while (currPosX <= stopRow && currPosY >= stopColumn) {
-                        char letter = cells[currPosX][currPosY].getLetter();
+                        Cell cell = cells[currPosX][currPosY];
+                        selectedWords.add(cell);
+                        char letter = cell.getLetter();
                         selection.append(letter);
                         ++currPosX; --currPosY;
                     }
@@ -301,7 +304,9 @@ public class SelectorComponent extends Component {
                     StringBuilder selection = new StringBuilder();
                     int currPosX = startRow, currPosY = startColumn;
                     while (currPosX >= stopRow && currPosY >= stopColumn) {
-                        char letter = cells[currPosX][currPosY].getLetter();
+                        Cell cell = cells[currPosX][currPosY];
+                        selectedWords.add(cell);
+                        char letter = cell.getLetter();
                         selection.append(letter);
                         --currPosX; --currPosY;
                     }
@@ -318,7 +323,9 @@ public class SelectorComponent extends Component {
                     StringBuilder selection = new StringBuilder();
                     int currPosX = startRow, currPosY = startColumn;
                     while (currPosX <= stopRow && currPosY <= stopColumn) {
-                        char letter = cells[currPosX][currPosY].getLetter();
+                        Cell cell = cells[currPosX][currPosY];
+                        selectedWords.add(cell);
+                        char letter = cell.getLetter();
                         selection.append(letter);
                         ++currPosX; ++currPosY;
                     }
@@ -350,6 +357,15 @@ public class SelectorComponent extends Component {
     }
 
     public void keep() {
+        for (Cell cell : selectedWords) {
+            int row = cell.getRow(), column = cell.getColumn();
+            GameObject letterGameObject = letters[row][column];
+            LetterComponent letterComponent = letterGameObject.getComponent(LetterComponent.class);
+            SpriteRenderer letterSr = letterGameObject.getComponent(SpriteRenderer.class);
+            letterSr.setSprite(letterComponent.getFoundedSprite());
+            letterGameObject.transform.setSize(size, size);
+        }
+        removeGameObject(gameObject);
         float magnitude = firstTouchPosition.dst(stopDragPosition);
         //transform.setSize(transform.getWidth(), magnitude);
         transform.setRotation(keepAngle);

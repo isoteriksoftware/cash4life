@@ -83,7 +83,8 @@ public class GameManager extends Component {
         LetterManager.getInstance().initLevel();
     }
 
-    public void currentLevelFinished() {
+    protected void currentLevelFinished() {
+        LetterManager.getInstance().getValidCells().clear();
         LetterManager.getInstance().destroyLetters();
         destroyAllSelectors();
 

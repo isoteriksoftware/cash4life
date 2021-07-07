@@ -27,5 +27,6 @@ class Cash4Life : XGdxGame() {
         xGdx.assets.enqueueFolderContents("${GlobalConstants.CASH_PUZZLES_ASSETS_HOME}/images", Texture::class.java)
         xGdx.assets.enqueueSkin(GlobalConstants.CASH_PUZZLES_SKIN)
         xGdx.assets.enqueueAtlas("${GlobalConstants.CASH_PUZZLES_ASSETS_HOME}/spritesheets/white.atlas")
+        xGdx.assets.enqueueAtlas("${GlobalConstants.CASH_PUZZLES_ASSETS_HOME}/spritesheets/orange.atlas")
     }
 }

@@ -35,7 +35,7 @@ public class GamePlayScene extends Scene {
         @Override
         public void run() {
             --stageTime;
-            if (stageTime > 0) {
+            if (stageTime >= 0) {
                 int minutes = stageTime / 60;
                 int seconds = stageTime % 60;
                 String minutesString = minutes >= 10 ? String.valueOf(minutes) : "0" + minutes;
@@ -92,6 +92,8 @@ public class GamePlayScene extends Scene {
 
         categoryNameLabel = new Label("Category", skin, "whitebox");
         categoryNameLabel.setAlignment(Align.center);
+        categoryNameLabel.setWrap(true);
+        categoryNameLabel.setFontScale(0.5f);
         rescaleUI(categoryNameLabel);rescaleUI(categoryNameLabel);
 
         timerLabel = new Label("00:00", skin, "whitebox");
@@ -102,6 +104,14 @@ public class GamePlayScene extends Scene {
                 .findRegion("clock-icon")
         );
         rescaleUI(clockIcon);rescaleUI(clockIcon);
+
+        TextButton hintBtn = new TextButton("Show Hint", skin);
+        hintBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                LetterManager.getInstance().showHint();
+            }
+        });
 
         Table table = new Table();
         //table.setDebug(true);
@@ -115,6 +125,9 @@ public class GamePlayScene extends Scene {
         table.add(categoryNameLabel).left().padTop(50f).width(categoryNameLabel.getWidth()).height(categoryNameLabel.getHeight());
         //table.add(clockIcon).right().padTop(50f).padRight(5f).width(clockIcon.getWidth()).height(clockIcon.getHeight());
         table.add(timerLabel).right().padTop(50f).width(timerLabel.getWidth()).height(timerLabel.getHeight());
+        table.row();
+
+        table.add(hintBtn).center().expandX().colspan(2).padTop(30f).width(hintBtn.getWidth()).height(hintBtn.getHeight());
 
         canvas.addActor(table);
     }
@@ -132,13 +145,6 @@ public class GamePlayScene extends Scene {
     }
 
     private void toSplashScene() {
-//        xGdx.setScene(
-//                new CashPuzzlesSplash(),
-//                SceneTransitions.slide(
-//                        1f, SceneTransitionDirection.UP, true, Interpolation.pow5Out
-//                )
-//        );
-
         xGdx.sceneManager.revertToPreviousScene(SceneTransitions.slide(
                 1f, SceneTransitionDirection.UP, true, Interpolation.pow5Out
         ));
@@ -168,13 +174,13 @@ public class GamePlayScene extends Scene {
         backgroundTransform.setSize(gameWorldUnits.getWorldWidth(), gameWorldUnits.getWorldHeight());
         addGameObject(background);
 
-        GameObject gameManager = new GameObject();
-        gameManager.addComponent(new GameManager());
-        addGameObject(gameManager);
-
         GameObject letterManager = new GameObject();
         letterManager.addComponent(new LetterManager());
         addGameObject(letterManager);
+
+        GameObject gameManager = new GameObject();
+        gameManager.addComponent(new GameManager());
+        addGameObject(gameManager);
 
         GameManager.getInstance().cont();
 

@@ -36,4 +36,11 @@
       background: challenge-white-box
     }
   }
+  TextButtonStyle: {
+    default: {
+      font: font
+      fontColor: white
+      up: challenge-small-button
+    }
+  }
 }

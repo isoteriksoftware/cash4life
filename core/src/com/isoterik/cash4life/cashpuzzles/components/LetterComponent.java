@@ -1,5 +1,7 @@
 package com.isoterik.cash4life.cashpuzzles.components;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.isoterik.cash4life.GlobalConstants;
 import com.isoterik.cash4life.cashpuzzles.WordManager;
@@ -12,6 +14,8 @@ public class LetterComponent extends Component {
     private Transform transform;
 
     private static boolean isTouched;
+
+    private TextureRegion foundedSprite;
 
     @Override
     public void start() {
@@ -48,5 +52,13 @@ public class LetterComponent extends Component {
     private boolean touched(Vector2 touchPos) {
         return touchPos.x >= transform.getX() && touchPos.x <= transform.getX() + transform.getWidth()
                 && touchPos.y >= transform.getY() && touchPos.y <= transform.getY() + transform.getHeight();
+    }
+
+    protected void setFoundedSprite(TextureRegion sprite) {
+        foundedSprite = sprite;
+    }
+
+    protected TextureRegion getFoundedSprite() {
+        return foundedSprite;
     }
 }

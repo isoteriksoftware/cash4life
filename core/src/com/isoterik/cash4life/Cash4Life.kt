@@ -1,7 +1,6 @@
 package com.isoterik.cash4life
 
 import com.badlogic.gdx.graphics.Texture
-import com.isoterik.cash4life.cashpuzzles.GameAssetsManager
 import io.github.isoteriktech.xgdx.Scene
 import io.github.isoteriktech.xgdx.XGdxGame
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
@@ -14,7 +13,6 @@ class Cash4Life : XGdxGame() {
 
         loadDoubleCashAssets()
         xGdx.assets.loadAssetsNow()
-        GameAssetsManager.getInstance().load(GlobalConstants.CASH_PUZZLES_ASSETS_HOME)
 
         splashTransition = SceneTransitions.fade(1f)
         return MainScene()
@@ -26,6 +24,8 @@ class Cash4Life : XGdxGame() {
         xGdx.assets.enqueueSkin(GlobalConstants.DOUBLE_CASH_SKIN)
         xGdx.assets.enqueueSfxFolder("${GlobalConstants.DOUBLE_CASH_ASSETS_HOME}/sfx")
 
-        GameAssetsManager.getInstance().enqueue(GlobalConstants.CASH_PUZZLES_ASSETS_HOME)
+        xGdx.assets.enqueueFolderContents("${GlobalConstants.CASH_PUZZLES_ASSETS_HOME}/images", Texture::class.java)
+        xGdx.assets.enqueueSkin(GlobalConstants.CASH_PUZZLES_SKIN)
+        xGdx.assets.enqueueAtlas("${GlobalConstants.CASH_PUZZLES_ASSETS_HOME}/spritesheets/white.atlas")
     }
 }

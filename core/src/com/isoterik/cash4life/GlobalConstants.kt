@@ -11,4 +11,5 @@ object GlobalConstants {
 
     // Cash Puzzles Config
     const val CASH_PUZZLES_ASSETS_HOME = "cashpuzzles"
+    const val CASH_PUZZLES_SKIN        = "$CASH_PUZZLES_ASSETS_HOME/skin/ui.json"
 }

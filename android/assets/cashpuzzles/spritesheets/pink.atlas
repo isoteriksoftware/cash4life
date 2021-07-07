@@ -1,0 +1,56 @@
+pink.png
+	size: 512, 1024
+	filter: Linear, Linear
+	repeat: none
+A
+	bounds: 9, 36, 112, 121
+B
+	bounds: 130, 36, 112, 121
+C
+	bounds: 251, 36, 112, 121
+D
+	bounds: 372, 36, 112, 121
+E
+	bounds: 9, 175, 112, 121
+F
+	bounds: 130, 175, 112, 121
+G
+	bounds: 251, 175, 112, 121
+H
+	bounds: 372, 175, 112, 121
+I
+	bounds: 9, 314, 112, 121
+J
+	bounds: 130, 314, 112, 121
+K
+	bounds: 251, 314, 112, 121
+L
+	bounds: 372, 314, 112, 121
+M
+	bounds: 9, 453, 112, 121
+N
+	bounds: 130, 453, 112, 121
+O
+	bounds: 251, 453, 112, 121
+P
+	bounds: 372, 453, 112, 121
+Q
+	bounds: 9, 592, 112, 121
+R
+	bounds: 130, 592, 112, 121
+S
+	bounds: 251, 592, 112, 121
+T
+	bounds: 372, 592, 112, 121
+U
+	bounds: 9, 731, 112, 121
+V
+	bounds: 130, 731, 112, 121
+W
+	bounds: 251, 731, 112, 121
+X
+	bounds: 372, 731, 112, 121
+Y
+	bounds: 9, 870, 112, 121
+Z
+	bounds: 130, 870, 112, 121

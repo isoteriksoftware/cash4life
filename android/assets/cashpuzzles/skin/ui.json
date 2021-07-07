@@ -1,0 +1,39 @@
+{
+  BitmapFont: {
+    font: {
+      file: arial.fnt
+    }
+  },
+  Color: {
+    black: {
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    }
+    white: {
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    }
+  }
+  ButtonStyle: {
+    play: {
+      up: play-button
+    }
+    back: {
+      up: back-icon
+    }
+  }
+  LabelStyle: {
+    default: {
+      font: font
+    }
+    whitebox: {
+      font: font,
+      fontColor: black
+      background: challenge-white-box
+    }
+  }
+}

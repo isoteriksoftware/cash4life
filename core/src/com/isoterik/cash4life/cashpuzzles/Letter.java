@@ -1,12 +1,20 @@
 package com.isoterik.cash4life.cashpuzzles;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.isoterik.cash4life.GlobalConstants;
+import io.github.isoteriktech.xgdx.XGdx;
 
 public class Letter {
 
     private char letter;
     private Sprite sprite;
+
+    // Static variable! Only one copy exists for all letter objects
+    private static final TextureAtlas lettersAtlas = XGdx.instance().assets.getAtlas(
+            GlobalConstants.CASH_PUZZLES_ASSETS_HOME + "/spritesheets/white.atlas"
+    );
 
     public Letter(char letter) {
         this.letter = letter;
@@ -18,7 +26,6 @@ public class Letter {
     }
 
     public TextureRegion getTextureRegion() {
-        return GameAssetsManager.getInstance().getLetters()
-                .findRegion(String.valueOf(getLetter()).toLowerCase());
+        return lettersAtlas.findRegion(String.valueOf(getLetter()).toUpperCase());
     }
 }

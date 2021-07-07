@@ -3,6 +3,7 @@ package com.isoterik.cash4life.cashpuzzles.components;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.isoterik.cash4life.cashpuzzles.Cell;
+import com.isoterik.cash4life.cashpuzzles.GamePlayScene;
 import com.isoterik.cash4life.cashpuzzles.WordManager;
 import com.isoterik.cash4life.cashpuzzles.utils.Board;
 import io.github.isoteriktech.xgdx.Component;
@@ -22,13 +23,14 @@ public class SelectorComponent extends Component {
     private Vector2 initialSize;
     private Vector2 firstTouchPosition;
     private Vector2 mousePos;
+    private Vector2 stopDragPosition;
     private Vector2[] magnitudePositions;
 
     private boolean flag = true;
     private boolean doOnce;
 
     private float keepAngle;
-    private final float size = 0.3f;
+    private float size;
 
     public void setWords(ArrayList<String> words) {
         this.words = words;
@@ -37,7 +39,6 @@ public class SelectorComponent extends Component {
     @Override
     public void start() {
         transform = gameObject.transform;
-        transform.setSize(size, size);
         spriteRenderer = gameObject.getComponent(SpriteRenderer.class);
 
         initialSize = new Vector2(
@@ -49,7 +50,7 @@ public class SelectorComponent extends Component {
         spriteRenderer.setColor(new Color(1,1,1,0.5f));
         spriteRenderer.setVisible(false);
 
-        board = Properties.board;
+        board = GameManager.getInstance().getBoard();
     }
 
     @Override
@@ -127,6 +128,10 @@ public class SelectorComponent extends Component {
         }
     }
 
+    public void setSize(float size) {
+        this.size = size;
+    }
+
     private void setMagnitudePositions() {
         magnitudePositions = new Vector2[]{
                 new Vector2(
@@ -184,10 +189,14 @@ public class SelectorComponent extends Component {
     }
 
     private void validate(String selection, float angle) {
-        if (words.contains(selection) && !Properties.foundWords.contains(selection)) {
+        if (words.contains(selection) && !WordManager.getInstance().getFoundWords().contains(selection)) {
             keepAngle = angle;
-            Properties.foundWords.add(selection);
+            WordManager.getInstance().getFoundWords().add(selection);
             keep();
+
+            if (WordManager.getInstance().getFoundWords().size() == words.size()) {
+                GameManager.getInstance().currentLevelFinished();
+            }
         }
         else {
             notValid();
@@ -199,6 +208,8 @@ public class SelectorComponent extends Component {
 
         int startRow = start.getRow(), startColumn = start.getColumn();
         int stopRow = stop.getRow(), stopColumn = stop.getColumn();
+
+        stopDragPosition = stop.getPosition();
 
         // Vertical up
         if (startColumn == stopColumn && startRow > stopRow) {
@@ -312,7 +323,7 @@ public class SelectorComponent extends Component {
                         ++currPosX; ++currPosY;
                     }
 
-                    validate(selection.toString(), 255f);
+                    validate(selection.toString(), 225f);
                 }
                 else {
                     notValid();
@@ -339,6 +350,8 @@ public class SelectorComponent extends Component {
     }
 
     public void keep() {
+        float magnitude = firstTouchPosition.dst(stopDragPosition);
+        //transform.setSize(transform.getWidth(), magnitude);
         transform.setRotation(keepAngle);
         getComponent(SpriteRenderer.class).setColor(getRandomColor());
         removeComponent(SelectorComponent.class);

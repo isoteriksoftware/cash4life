@@ -8,10 +8,10 @@ public class WordManager {
     private static final WordManager instance = new WordManager();
 
     private ArrayList<String> words;
-    private ArrayList<String> wordsCopy;
+    private ArrayList<String> loadedWords;
+    private ArrayList<String> foundWords;
 
-    private WordManager() {
-    }
+    private WordManager() { }
 
     public static WordManager getInstance() {
         return instance;
@@ -21,15 +21,24 @@ public class WordManager {
         ArrayList<String> fileWords = FileUtilities.getListOfLinesFromFile(directory, file);
 
         Collections.sort(fileWords);
-        wordsCopy = new ArrayList<>(fileWords);
         words = new ArrayList<>(fileWords);
+        loadedWords = new ArrayList<>();
+        foundWords = new ArrayList<>();
+    }
+
+    public void addLoadedWord(String word) {
+        loadedWords.add(word);
     }
 
     public ArrayList<String> getWords() {
         return words;
     }
 
-    public ArrayList<String> getWordsCopy() {
-        return wordsCopy;
+    public ArrayList<String> getLoadedWords() {
+        return loadedWords;
+    }
+
+    public ArrayList<String> getFoundWords() {
+        return foundWords;
     }
 }

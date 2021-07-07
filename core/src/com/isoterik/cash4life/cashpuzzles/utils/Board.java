@@ -68,7 +68,7 @@ public class Board {
         Random random = new Random();
         boolean fitted = false;
         for (int i = 0; i < rows * columns; i++) {
-            int randX = (int) (Math.random() * rows), randY = (int) (Math.random() * columns);
+            int randX = random.nextInt(rows), randY = random.nextInt(columns);
             Vector2 index = new Vector2(randX, randY);
             for (int j = 0; j < directions.length; j++) {
                 Vector2 direction = directions[random.nextInt(directions.length)];
@@ -79,6 +79,7 @@ public class Board {
                         randY += direction.y;
                     }
                     fitted = true;
+                    WordManager.getInstance().addLoadedWord(word);
                 }
                 if (fitted) break;
             }
@@ -88,14 +89,13 @@ public class Board {
 
     public boolean isFit(String word, Vector2 index, Vector2 direction) {
         try {
-            Vector2 tmp = index;
             for (char c : word.toCharArray()) {
-                if (tmp.x < 0 || tmp.y < 0)
+                if (index.x < 0 || index.y < 0)
                     throw new IndexOutOfBoundsException();
-                char letter = cells[(int) tmp.x][(int) tmp.y].getLetter();
+                char letter = cells[(int) index.x][(int) index.y].getLetter();
                 if (letter != ' ' && letter != c)   return false;
-                tmp.x += direction.x;
-                tmp.y += direction.y;
+                index.x += direction.x;
+                index.y += direction.y;
             }
         }
         catch (IndexOutOfBoundsException e) {

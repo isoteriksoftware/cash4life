@@ -21,14 +21,7 @@ public class LetterManager extends Component {
     private float size;
 
     private void singleton() {
-        if (instance != null)
-        {
-            removeGameObject(gameObject);
-        }
-        else
-        {
-            instance = this;
-        }
+        instance = this;
     }
 
     @Override

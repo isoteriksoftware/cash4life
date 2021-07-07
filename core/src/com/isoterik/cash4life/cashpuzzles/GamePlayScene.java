@@ -132,12 +132,16 @@ public class GamePlayScene extends Scene {
     }
 
     private void toSplashScene() {
-        xGdx.setScene(
-                new CashPuzzlesSplash(),
-                SceneTransitions.slide(
-                        1f, SceneTransitionDirection.UP, true, Interpolation.pow5Out
-                )
-        );
+//        xGdx.setScene(
+//                new CashPuzzlesSplash(),
+//                SceneTransitions.slide(
+//                        1f, SceneTransitionDirection.UP, true, Interpolation.pow5Out
+//                )
+//        );
+
+        xGdx.sceneManager.revertToPreviousScene(SceneTransitions.slide(
+                1f, SceneTransitionDirection.UP, true, Interpolation.pow5Out
+        ));
     }
 
     public GamePlayScene() {

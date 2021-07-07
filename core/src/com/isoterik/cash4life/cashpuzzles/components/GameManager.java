@@ -35,14 +35,7 @@ public class GameManager extends Component {
     private int currentLevelIndex = 0;
 
     private void singleton() {
-        if (instance != null)
-        {
-            removeGameObject(gameObject);
-        }
-        else
-        {
-            instance = this;
-        }
+        instance = this;
     }
 
     @Override
@@ -134,7 +127,7 @@ public class GameManager extends Component {
         }
 
         private void init() {
-            fileName = categoryName.replaceAll("\\s", "").toLowerCase(Locale.ROOT).concat(".txt");
+            fileName = categoryName.replaceAll("\\s", "").concat(".txt");
             dimensions = setDimensions();
         }
 

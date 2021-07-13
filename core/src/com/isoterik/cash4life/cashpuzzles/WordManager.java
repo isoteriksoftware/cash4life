@@ -1,5 +1,7 @@
 package com.isoterik.cash4life.cashpuzzles;
 
+import com.isoterik.cash4life.cashpuzzles.utils.FileUtilities;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -40,5 +42,9 @@ public class WordManager {
 
     public ArrayList<String> getFoundWords() {
         return foundWords;
+    }
+
+    public void setFoundWords(ArrayList<String> foundWords) {
+        this.foundWords = foundWords;
     }
 }

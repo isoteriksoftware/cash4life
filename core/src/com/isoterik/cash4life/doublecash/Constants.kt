@@ -1,5 +1,7 @@
 package com.isoterik.cash4life.doublecash
 
+import com.isoterik.cash4life.DemoUser
+
 object Constants {
     const val GUI_WIDTH  = 1400
     const val GUI_HEIGHT = 720

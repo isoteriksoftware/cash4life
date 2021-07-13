@@ -3,9 +3,7 @@ package com.isoterik.cash4life.cashpuzzles.components;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.isoterik.cash4life.cashpuzzles.Cell;
-import com.isoterik.cash4life.cashpuzzles.GamePlayScene;
-import com.isoterik.cash4life.cashpuzzles.Letter;
+import com.isoterik.cash4life.cashpuzzles.utils.Cell;
 import com.isoterik.cash4life.cashpuzzles.WordManager;
 import com.isoterik.cash4life.cashpuzzles.utils.Board;
 import io.github.isoteriktech.xgdx.Component;
@@ -52,7 +50,7 @@ public class SelectorComponent extends Component {
         );
         firstTouchPosition = Vector2.Zero;
 
-        spriteRenderer.setColor(new Color(0,0,0,0.5f));
+        spriteRenderer.setColor(new Color(1,1,1,0.5f));
         spriteRenderer.setVisible(false);
 
         board = GameManager.getInstance().getBoard();
@@ -128,9 +126,6 @@ public class SelectorComponent extends Component {
 
         if (! input.isTouched()) {
             flag = true;
-            //spriteRenderer.setVisible(false);
-            //transform.setRotation(0.0f);
-            //transform.setSize(initialSize.x, initialSize.y);
 
             if (doOnce) {
                 checkValid();
@@ -182,9 +177,12 @@ public class SelectorComponent extends Component {
         if (words.contains(selection) && !WordManager.getInstance().getFoundWords().contains(selection)) {
             keepAngle = angle;
             WordManager.getInstance().getFoundWords().add(selection);
+            UIManager.getInstance().removeFoundWord(selection);
             keep();
 
-            if (WordManager.getInstance().getFoundWords().size() == words.size()) {
+            boolean b1 = WordManager.getInstance().getFoundWords().size() == words.size();
+            boolean b2 = WordManager.getInstance().getFoundWords().size() == GameManager.getInstance().getNoOfWordsToFind();
+            if (b1 || b2) {
                 GameManager.getInstance().currentLevelFinished();
             }
         }

@@ -1,9 +1,15 @@
 {
   BitmapFont: {
-    font: {
-      file: Arial.fnt
+    font1: {
+      file: action_man_bold.fnt
     }
-  },
+    font2: {
+      file: dyno_regular.fnt
+    }
+    font3: {
+      file: dyno_bold.fnt
+    }
+  }
   Color: {
     black: {
       r: 0
@@ -17,30 +23,204 @@
       b: 1
       a: 1
     }
+    grey: {
+      r: 0.7
+      g: 0.7
+      b: 0.7
+      a: 1
+    }
+    green: {
+      r: 0.4196
+      g: 0.8667
+      b: 0.2
+      a: 1
+    }
+    yellow: {
+      r: 1
+      g: 0.8784
+      b: 0.1843
+      a: 1
+    }
+    gold: {
+      r: 1
+      g: 0.702
+      b: 0.1725
+      a: 1
+    }
+    red: {
+      r: 1
+      g: 0.2980
+      b: 0.2471
+      a: 1
+    }
+    orange: {
+      r: 1
+      g: 0.5333
+      b: 0.1882
+      a: 1
+    }
+  }
+  TintedDrawable: {
+    translucent: {
+      name: bg_layer
+      color: {
+        r: 0
+        g: 0
+        b: 0
+        a: 0.9
+      }
+    }
+    transparent: {
+      name: bg_layer
+      color: {
+        r: 1
+        g: 1
+        b: 1
+        a: 0
+      }
+    }
   }
   ButtonStyle: {
-    play: {
-      up: play-button
+    continue: {
+      up: continue
+    }
+    continue_small: {
+      up: c_sm
+    }
+    new_game: {
+      up: new_game
+    }
+    new_game_small: {
+      up: ng_sm
     }
     back: {
-      up: back-icon
+      up: back
     }
-  }
-  LabelStyle: {
-    default: {
-      font: font
+    settings: {
+      up: settings_icon
     }
-    whitebox: {
-      font: font,
-      fontColor: black
-      background: challenge-white-box
+    yes: {
+      up: yes
+    }
+    no: {
+      up: no
+    }
+    ok: {
+      up: ok
+    }
+    powerup: {
+      up: rectangle
+    },
+    close: {
+      up: close
+    }
+    close_green: {
+      up: close_green
+    }
+    close_green_sh: {
+      up: close_green_sh
+    }
+    close_red: {
+      up: close_red
+    }
+    close_red_sh: {
+      up: close_red_sh
+    },
+    hint: {
+      up: power_up_hint
+    }
+    add_time: {
+      up: power_up_add_time
+    }
+    shuffle: {
+      up: power_up_shuffle
     }
   }
   TextButtonStyle: {
     default: {
-      font: font
+      font: font2
       fontColor: white
-      up: challenge-small-button
+      disabledFontColor: grey
+    }
+    p_blue: {
+      font: font2
+      fontColor: white
+      up: p_blue
+      disabled: p_blue_inactive
+    }
+    p_cyan: {
+      font: font2
+      fontColor: white
+      up: p_cyan
+      disabled: p_cyan_inactive
+    }
+    p_green: {
+      font: font2
+      fontColor: white
+      up: p_green
+      disabled: p_green_inactive
+    }
+    p_orange: {
+      font: font2
+      fontColor: white
+      up: p_orange
+      disabled: p_orange_inactive
+    }
+    p_pink: {
+      font: font2
+      fontColor: white
+      up: p_pink
+      disabled: p_pink_inactive
+    }
+    p_purple: {
+      font: font2
+      fontColor: white
+      up: p_purple
+      disabled: p_purple_inactive
+    }
+  }
+  LabelStyle: {
+    default: {
+      font: font2
+      fontColor: gold
+    }
+    confeti: {
+      font: font3
+      fontColor: white
+      background: confeti
+    }
+    popup: {
+      font: font3
+      fontColor: white
+      background: popup
+    }
+    text_regular: {
+      font: font2
+      fontColor: gold
+    }
+    text_bold: {
+      font: font3
+      fontColor: gold
+    }
+    text_bold2: {
+      font: font1
+      fontColor: white
+    }
+    header: {
+      font: font2
+      fontColor: black
+      background: header
+    }
+  }
+  WindowStyle: {
+    default: {
+      titleFont: font2
+      titleFontColor: black
+      stageBackground: translucent
+    }
+    dialog: {
+      parent: default
+      background: popup
     }
   }
 }

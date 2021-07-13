@@ -2,11 +2,10 @@ package com.isoterik.cash4life.cashpuzzles.utils;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.isoterik.cash4life.cashpuzzles.Cell;
 import com.isoterik.cash4life.cashpuzzles.WordManager;
 import com.isoterik.cash4life.cashpuzzles.components.LetterManager;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Board {
     private final int rows;
@@ -27,21 +26,22 @@ public class Board {
 
     public void generatePuzzle(ArrayList<String> words){
         //sort words by descending length
+        ArrayList<String> wordsCopy = new ArrayList<>(words);
         ArrayList<String> wordsInOrder = new ArrayList<>();
-        while(!words.isEmpty()) {
+        while(!wordsCopy.isEmpty()) {
             int index = 0;
-            for(int i = 0; i < words.size(); i++) {
-                if(words.get(i).length() > words.get(index).length()) {
+            for(int i = 0; i < wordsCopy.size(); i++) {
+                if(wordsCopy.get(i).length() > wordsCopy.get(index).length()) {
                     index = i;
                 }
             }
-            wordsInOrder.add(words.get(index));
-            words.remove(index);
+            wordsInOrder.add(wordsCopy.get(index));
+            wordsCopy.remove(index);
         }
 
         //insert each word in order
         for(String s : wordsInOrder)
-            fillCell(s);
+            my(s); //fillCell(s);
 
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
         char letter;
@@ -77,8 +77,7 @@ public class Board {
                             randX += direction.x;
                             randY += direction.y;
                         }
-                        catch (IndexOutOfBoundsException e) {
-                            continue;
+                        catch (IndexOutOfBoundsException ignored) {
                         }
                     }
                     fitted = true;
@@ -94,13 +93,14 @@ public class Board {
     public boolean isFit(String word, Vector2 index, Vector2 direction) {
         try {
             char[] arr = word.toCharArray();
+            Vector2 vector = new Vector2(index.x, index.y);
             for (char c : arr) {
-                if (index.x < 0 || index.y < 0)
+                if (vector.x < 0 || vector.y < 0 || vector.x >= rows || vector.y >= columns)
                     throw new IndexOutOfBoundsException();
-                char letter = cells[(int) index.x][(int) index.y].getLetter();
+                char letter = getCellAt(vector).getLetter();
                 if (letter != ' ' && letter != c)   return false;
-                index.x += direction.x;
-                index.y += direction.y;
+                vector.x += direction.x;
+                vector.y += direction.y;
             }
         }
         catch (IndexOutOfBoundsException e) {
@@ -121,7 +121,82 @@ public class Board {
         return cells;
     }
 
+    public Cell getCellAt(Vector2 point) {
+        return cells[(int) point.x][(int) point.y];
+    }
+
     public Cell getCellAt(int row, int column) {
         return cells[row][column];
+    }
+
+    private void my(String word) {
+        VisitedCell[] visitedCells = new VisitedCell[rows * columns];
+        initializeCells(visitedCells);
+        ArrayList<VisitedCell> visited = new ArrayList<>(Arrays.asList(visitedCells));
+        Collections.shuffle(visited);
+        for (VisitedCell visitedCell : visited) {
+            Cell cell = visitedCell.getCell();
+            ArrayList<Vector2> directions = visitedCell.getDirections();
+            Vector2 index = new Vector2(cell.getRow(), cell.getColumn());
+            boolean fitted = false;
+            for (Vector2 direction : directions) {
+                if (isFit(word, index, direction)) {
+                    Cell[] cells = new Cell[word.length()];
+                    int count = 0;
+                    for (char c : word.toCharArray()) {
+                        getCellAt(index).setLetter(c);
+                        cells[count++] = getCellAt(index);
+                        index.x += direction.x;
+                        index.y += direction.y;
+                    }
+                    fitted = true;
+                    WordManager.getInstance().addLoadedWord(word);
+                    LetterManager.getInstance().addValidCell(cells);
+                }
+                if (fitted) break;
+            }
+            if (fitted) break;
+        }
+    }
+
+    private void initializeCells(VisitedCell[] visitedCells) {
+        int count = 0;
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                visitedCells[count++] = new VisitedCell(new Cell(row, column));
+            }
+        }
+    }
+
+    private final ArrayList<Vector2> directions = new ArrayList<Vector2>() {
+        {
+            add(new Vector2(1, 0));
+            add(new Vector2(0, 1));
+            add(new Vector2(-1, 0));
+            add(new Vector2(0, -1));
+            add(new Vector2(1, -1));
+            add(new Vector2(-1, 1));
+            add(new Vector2(1, 1));
+            add(new Vector2(-1, -1));
+        }
+    };
+
+    class VisitedCell {
+        private Cell cell;
+        private ArrayList<Vector2> directions;
+
+        public VisitedCell(Cell cell) {
+            this.cell = cell;
+            directions = new ArrayList<>(Board.this.directions);
+            Collections.shuffle(directions);
+        }
+
+        public Cell getCell() {
+            return cell;
+        }
+
+        public ArrayList<Vector2> getDirections() {
+            return directions;
+        }
     }
 }

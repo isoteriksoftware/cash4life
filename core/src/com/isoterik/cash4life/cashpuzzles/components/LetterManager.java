@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.isoterik.cash4life.GlobalConstants;
-import com.isoterik.cash4life.cashpuzzles.Cell;
-import com.isoterik.cash4life.cashpuzzles.Letter;
+import com.isoterik.cash4life.cashpuzzles.utils.Cell;
+import com.isoterik.cash4life.cashpuzzles.utils.Letter;
 import com.isoterik.cash4life.cashpuzzles.WordManager;
 import com.isoterik.cash4life.cashpuzzles.utils.Board;
 import io.github.isoteriktech.xgdx.Component;
@@ -15,6 +16,8 @@ import io.github.isoteriktech.xgdx.GameObject;
 import io.github.isoteriktech.xgdx.Transform;
 import io.github.isoteriktech.xgdx.XGdx;
 import io.github.isoteriktech.xgdx.x2d.components.renderer.SpriteRenderer;
+
+import java.util.ArrayList;
 
 public class LetterManager extends Component {
     private static LetterManager instance;
@@ -28,8 +31,8 @@ public class LetterManager extends Component {
 
     private GameObject hintHighlighter;
 
-    private Color on = new Color(0, 0, 0, 0.5f);
-    private Color off = new Color(0, 0, 0, 0);
+    private final Color on = new Color(1, 1, 1, 0.5f);
+    private final Color off = new Color(0, 0, 0, 0);
 
     private float size;
     private float hintTime = 6;
@@ -68,6 +71,8 @@ public class LetterManager extends Component {
         float yW = scene.getGameWorldUnits().getWorldWidth(), yM = column * size, yK = column + 1;
         float yOffset = (yW - yM) / yK;
 
+        float yPositionOffset = size * 2;
+
         for (int i = 0; i < row; ++i) {
             for (int j = 0; j < column; ++j) {
                 char letter = cells[i][j].getLetter();
@@ -81,8 +86,8 @@ public class LetterManager extends Component {
                         xOffset + (xOffset * j) + (size * j),
                         yW - yOffset - (yOffset * i) - (size * i)
                 );
-                letterTransform.setPosition(position.x, position.y);
-                cells[i][j].setPosition(position);
+                letterTransform.setPosition(position.x, position.y + yPositionOffset);
+                cells[i][j].setPosition(position.x, position.y + yPositionOffset);
 
                 LetterComponent letterComponent = new LetterComponent();
                 letterComponent.setFoundedSprite(letter1.getFoundedSprite());
@@ -92,7 +97,7 @@ public class LetterManager extends Component {
         }
     }
 
-    private Timer.Task myTimerTask = new Timer.Task() {
+    private final Timer.Task myTimerTask = new Timer.Task() {
         @Override
         public void run() {
             SpriteRenderer highlighterSr = hintHighlighter.getComponent(SpriteRenderer.class);
@@ -206,11 +211,61 @@ public class LetterManager extends Component {
         return validCells;
     }
 
-    protected void destroyLetters() {
-        for (int i = 0; i < letters.length; i++) {
+    public void destroyLetters() {
+        for (GameObject[] gameObjects : letters) {
             for (int j = 0; j < letters[0].length; j++) {
-                GameObject letter = letters[i][j];
+                GameObject letter = gameObjects[j];
                 removeGameObject(letter);
+            }
+        }
+    }
+
+    public Timer.Task animatedCellsShuffle = new Timer.Task() {
+        private int maxShuffles = 5;
+
+        @Override
+        public void run() {
+            if (maxShuffles > 0) {
+                destroyLetters();
+                validCells.clear();
+
+                GameManager.getInstance().destroyAllSelectors();
+                GameManager.getInstance().reInitializeBoard();
+
+                initLevel();
+
+                maxShuffles--;
+            }
+            else {
+                maxShuffles = 5;
+                putSelectors();
+                cancel();
+            }
+        }
+    };
+
+    public void shuffleCells() {
+        if (animatedCellsShuffle.isScheduled()) return;
+
+        Timer.schedule(animatedCellsShuffle, 0.1f, 0.1f);
+    }
+
+    private GameObject getGameObjectFromCell(Cell cell) {
+        return letters[cell.getRow()][cell.getColumn()];
+    }
+
+    private void putSelectors() {
+        ArrayList<String> foundWords = WordManager.getInstance().getFoundWords();
+
+        for (Cell[] cellArray : validCells) {
+            if (! foundWords.contains(getWordFromCell(cellArray))) continue;
+
+            for (Cell cell : cellArray) {
+                GameObject letterGameObject = getGameObjectFromCell(cell);
+                LetterComponent letterComponent = letterGameObject.getComponent(LetterComponent.class);
+                SpriteRenderer letterSr = letterGameObject.getComponent(SpriteRenderer.class);
+                letterSr.setSprite(letterComponent.getFoundedSprite());
+                letterGameObject.transform.setSize(size, size);
             }
         }
     }

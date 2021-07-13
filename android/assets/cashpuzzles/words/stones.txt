@@ -1,0 +1,9 @@
+Diamond
+Gold
+Sapphire
+Emerald
+Ruby
+Pearl
+Jasper
+Platinum
+Silver

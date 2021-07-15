@@ -1,6 +1,7 @@
 package com.isoterik.cash4life.cashpuzzles;
 
-import com.badlogic.gdx.ai.steer.behaviors.Alignment;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -8,19 +9,18 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.isoterik.cash4life.Cash4Life;
-import com.isoterik.cash4life.DemoStorage;
 import com.isoterik.cash4life.DemoUser;
 import com.isoterik.cash4life.GlobalConstants;
-import com.isoterik.cash4life.cashpuzzles.components.GameManager;
+import com.isoterik.cash4life.cashpuzzles.components.managers.GameManager;
+import com.isoterik.cash4life.cashpuzzles.utils.Storage;
 import io.github.isoteriktech.xgdx.Scene;
 import io.github.isoteriktech.xgdx.ui.ActorAnimation;
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirection;
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions;
 
-import javax.swing.*;
+import java.io.File;
 import java.util.*;
 
 public class CashPuzzlesSplash extends Scene {
@@ -28,6 +28,8 @@ public class CashPuzzlesSplash extends Scene {
 
     public static final int RESOLUTION_WIDTH = 480;
     public static final int RESOLUTION_HEIGHT = 780;
+
+    private Storage storage;
 
     private float modX;
     private float modY;
@@ -39,9 +41,17 @@ public class CashPuzzlesSplash extends Scene {
     public static final DemoUser user = new DemoUser("", "", "", 5000f);
 
     public CashPuzzlesSplash() {
+        storage = new Json().fromJson(Storage.class, getJsonFile());
+
         setupCamera();
         setBackgroundColor(new Color(.1f, .1f, .2f, 1f));
         setupUI();
+    }
+
+    private FileHandle getJsonFile() {
+        String currentPath = Gdx.files.internal(GlobalConstants.CASH_PUZZLES_ASSETS_HOME).path();
+        String fileDirectory = currentPath + File.separatorChar + "json";
+        return Gdx.files.local(fileDirectory + File.separatorChar + "storage.json");
     }
 
     private void setupCamera() {
@@ -72,7 +82,7 @@ public class CashPuzzlesSplash extends Scene {
         newGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (DemoStorage.IS_GAME_SAVED) {
+                if (storage.isSaved()) {
                     popUpNewGameDialog();
                 }
                 else {
@@ -83,7 +93,7 @@ public class CashPuzzlesSplash extends Scene {
         resizeUI(newGameBtn);
 
         Button continueBtn = new Button(skin, "continue");
-        continueBtn.setVisible(DemoStorage.IS_GAME_SAVED);
+        continueBtn.setVisible(storage.isSaved());
         continueBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -234,12 +244,22 @@ public class CashPuzzlesSplash extends Scene {
             timeAndPricesButton[i].addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    DemoStorage.RESET();
+                    resetStorage();
 
                     GameManager.setLevelTime(time);
                     user.withdraw(price);
                     canvas.getActors().removeValue(window, true);
                     toGamePlayScene();
+                }
+
+                private void resetStorage() {
+                    Storage defaultState = new Storage(
+                            false,
+                            null,
+                            0,
+                            0
+                    );
+                    new Json().toJson(defaultState, getJsonFile());
                 }
             });
         }

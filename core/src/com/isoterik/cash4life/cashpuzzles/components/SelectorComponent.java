@@ -3,8 +3,8 @@ package com.isoterik.cash4life.cashpuzzles.components;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.isoterik.cash4life.cashpuzzles.components.managers.*;
 import com.isoterik.cash4life.cashpuzzles.utils.Cell;
-import com.isoterik.cash4life.cashpuzzles.WordManager;
 import com.isoterik.cash4life.cashpuzzles.utils.Board;
 import io.github.isoteriktech.xgdx.Component;
 import io.github.isoteriktech.xgdx.GameObject;
@@ -15,6 +15,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class SelectorComponent extends Component {
+    private WordManager wordManager;
+    private UIManager uiManager;
+    private LetterManager letterManager;
+    private GameManager gameManager;
+
     private Transform transform;
     private SpriteRenderer spriteRenderer;
 
@@ -39,8 +44,17 @@ public class SelectorComponent extends Component {
         this.words = words;
     }
 
+    private void initializeManagers() {
+        wordManager = gameObject.getHostScene().findGameObject("wordManager").getComponent(WordManager.class);
+        uiManager = gameObject.getHostScene().findGameObject("uiManager").getComponent(UIManager.class);
+        letterManager = gameObject.getHostScene().findGameObject("letterManager").getComponent(LetterManager.class);
+        gameManager = gameObject.getHostScene().findGameObject("gameManager").getComponent(GameManager.class);
+    }
+
     @Override
     public void start() {
+        initializeManagers();
+
         transform = gameObject.transform;
         spriteRenderer = gameObject.getComponent(SpriteRenderer.class);
 
@@ -53,8 +67,8 @@ public class SelectorComponent extends Component {
         spriteRenderer.setColor(new Color(1,1,1,0.5f));
         spriteRenderer.setVisible(false);
 
-        board = GameManager.getInstance().getBoard();
-        letters = LetterManager.getInstance().getLetters();
+        board = gameManager.getBoard();
+        letters = letterManager.getLetters();
         selectedWords = new Array<>();
         transform.setOrigin(transform.getWidth() / 2, transform.getHeight() / 2);
     }
@@ -174,16 +188,16 @@ public class SelectorComponent extends Component {
     }
 
     private void validate(String selection, float angle) {
-        if (words.contains(selection) && !WordManager.getInstance().getFoundWords().contains(selection)) {
+        if (words.contains(selection) && !wordManager.getFoundWords().contains(selection)) {
             keepAngle = angle;
-            WordManager.getInstance().getFoundWords().add(selection);
-            UIManager.getInstance().removeFoundWord(selection);
+            wordManager.getFoundWords().add(selection);
+            uiManager.removeFoundWord(selection);
             keep();
 
-            boolean b1 = WordManager.getInstance().getFoundWords().size() == words.size();
-            boolean b2 = WordManager.getInstance().getFoundWords().size() == GameManager.getInstance().getNoOfWordsToFind();
+            boolean b1 = wordManager.getFoundWords().size() == words.size();
+            boolean b2 = wordManager.getFoundWords().size() == gameManager.getNoOfWordsToFind();
             if (b1 || b2) {
-                GameManager.getInstance().currentLevelFinished();
+                gameManager.currentLevelFinished();
             }
         }
         else {

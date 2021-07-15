@@ -1,16 +1,20 @@
 package com.isoterik.cash4life.cashpuzzles.components;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.isoterik.cash4life.GlobalConstants;
-import com.isoterik.cash4life.cashpuzzles.WordManager;
+import com.isoterik.cash4life.cashpuzzles.components.SelectorComponent;
+import com.isoterik.cash4life.cashpuzzles.components.managers.LetterManager;
+import com.isoterik.cash4life.cashpuzzles.components.managers.WordManager;
 import io.github.isoteriktech.xgdx.Component;
 import io.github.isoteriktech.xgdx.GameObject;
 import io.github.isoteriktech.xgdx.Transform;
 import io.github.isoteriktech.xgdx.XGdx;
 
 public class LetterComponent extends Component {
+    private WordManager wordManager;
+    private LetterManager letterManager;
+
     private Transform transform;
 
     private static boolean isTouched;
@@ -19,6 +23,9 @@ public class LetterComponent extends Component {
 
     @Override
     public void start() {
+        wordManager = gameObject.getHostScene().findGameObject("wordManager").getComponent(WordManager.class);
+        letterManager = gameObject.getHostScene().findGameObject("letterManager").getComponent(LetterManager.class);
+
         transform = gameObject.transform;
     }
 
@@ -35,8 +42,8 @@ public class LetterComponent extends Component {
                 selector.setTag("selector");
 
                 SelectorComponent selectorComponent = new SelectorComponent();
-                selectorComponent.setWords(WordManager.getInstance().getLoadedWords());
-                selectorComponent.setSize(LetterManager.getInstance().getSize());
+                selectorComponent.setWords(wordManager.getLoadedWords());
+                selectorComponent.setSize(letterManager.getSize());
                 selector.addComponent(selectorComponent);
                 addGameObject(selector);
 
@@ -54,11 +61,11 @@ public class LetterComponent extends Component {
                 && touchPos.y >= transform.getY() && touchPos.y <= transform.getY() + transform.getHeight();
     }
 
-    protected void setFoundedSprite(TextureRegion sprite) {
+    public void setFoundedSprite(TextureRegion sprite) {
         foundedSprite = sprite;
     }
 
-    protected TextureRegion getFoundedSprite() {
+    public TextureRegion getFoundedSprite() {
         return foundedSprite;
     }
 }

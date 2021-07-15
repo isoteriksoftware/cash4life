@@ -2,29 +2,40 @@ package com.isoterik.cash4life.cashpuzzles.utils;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.isoterik.cash4life.cashpuzzles.WordManager;
-import com.isoterik.cash4life.cashpuzzles.components.LetterManager;
+import com.isoterik.cash4life.cashpuzzles.components.managers.WordManager;
+import com.isoterik.cash4life.cashpuzzles.components.managers.LetterManager;
 
 import java.util.*;
 
 public class Board {
+    private WordManager wordManager;
+    private LetterManager letterManager;
+
     private final int rows;
     private final int columns;
+    private ArrayList<String> words;
+
     private final Cell[][] cells;
 
     public Board(int rows, int columns, ArrayList<String> words) {
         this.rows = rows;
         this.columns = columns;
+        this.words = words;
+
         this.cells = new Cell[rows][columns];
         for(int i = 0; i < rows; i++) {
             for(int j = 0; j < columns; j++) {
                 cells[i][j] = new Cell(i,j);
             }
         }
-        generatePuzzle(words);
     }
 
-    public void generatePuzzle(ArrayList<String> words){
+    public void initializeManagers(WordManager wordManager, LetterManager letterManager) {
+        this.wordManager = wordManager;
+        this.letterManager = letterManager;
+    }
+
+    public void generatePuzzle(){
         //sort words by descending length
         ArrayList<String> wordsCopy = new ArrayList<>(words);
         ArrayList<String> wordsInOrder = new ArrayList<>();
@@ -81,8 +92,8 @@ public class Board {
                         }
                     }
                     fitted = true;
-                    WordManager.getInstance().addLoadedWord(word);
-                    LetterManager.getInstance().addValidCell(cells);
+                    wordManager.addLoadedWord(word);
+                    letterManager.addValidCell(cells);
                 }
                 if (fitted) break;
             }
@@ -150,8 +161,8 @@ public class Board {
                         index.y += direction.y;
                     }
                     fitted = true;
-                    WordManager.getInstance().addLoadedWord(word);
-                    LetterManager.getInstance().addValidCell(cells);
+                    wordManager.addLoadedWord(word);
+                    letterManager.addValidCell(cells);
                 }
                 if (fitted) break;
             }

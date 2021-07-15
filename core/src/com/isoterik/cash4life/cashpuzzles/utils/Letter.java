@@ -7,19 +7,19 @@ import io.github.isoteriktech.xgdx.XGdx;
 
 public class Letter {
 
-    private char letter;
-    private TextureRegion foundedSprite;
+    private final char letter;
+    private final TextureRegion foundedSprite;
 
-    // Static variable! Only one copy exists for all letter objects
-    private static final TextureAtlas lettersAtlas = XGdx.instance().assets.getAtlas(
+    private final TextureAtlas lettersAtlas = XGdx.instance().assets.getAtlas(
             GlobalConstants.CASH_PUZZLES_ASSETS_HOME + "/spritesheets/white.atlas"
-    );
-    private static final TextureAtlas foundedLettersAtlas = XGdx.instance().assets.getAtlas(
-            GlobalConstants.CASH_PUZZLES_ASSETS_HOME + "/spritesheets/orange.atlas"
     );
 
     public Letter(char letter) {
         this.letter = letter;
+
+        TextureAtlas foundedLettersAtlas = XGdx.instance().assets.getAtlas(
+                GlobalConstants.CASH_PUZZLES_ASSETS_HOME + "/spritesheets/orange.atlas"
+        );
         foundedSprite = foundedLettersAtlas.findRegion(String.valueOf(getLetter()).toUpperCase());
     }
 

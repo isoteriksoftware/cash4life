@@ -1,25 +1,15 @@
 package com.isoterik.cash4life.cashpuzzles;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.isoterik.cash4life.GlobalConstants;
-import com.isoterik.cash4life.cashpuzzles.components.GameManager;
-import com.isoterik.cash4life.cashpuzzles.components.LetterManager;
-import com.isoterik.cash4life.cashpuzzles.components.UIManager;
+import com.isoterik.cash4life.cashpuzzles.components.managers.*;
 import io.github.isoteriktech.xgdx.GameObject;
 import io.github.isoteriktech.xgdx.Scene;
 import io.github.isoteriktech.xgdx.Transform;
 import io.github.isoteriktech.xgdx.ui.ActorAnimation;
 import io.github.isoteriktech.xgdx.utils.GameWorldUnits;
-import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirection;
-import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions;
 
 public class GamePlayScene extends Scene {
     public GamePlayScene() {
@@ -52,19 +42,36 @@ public class GamePlayScene extends Scene {
         backgroundTransform.setSize(gameWorldUnits.getWorldWidth(), gameWorldUnits.getWorldHeight());
         addGameObject(background);
 
+        GameObject storageManager = new GameObject();
+        storageManager.setTag("storageManager");
+        storageManager.addComponent(new StorageManager());
+        addGameObject(storageManager);
+
+        GameObject wordManager = new GameObject();
+        wordManager.setTag("wordManager");
+        wordManager.addComponent(new WordManager());
+        addGameObject(wordManager);
+
         GameObject uiManager = new GameObject();
+        uiManager.setTag("uiManager");
         uiManager.addComponent(new UIManager(xGdx));
         addGameObject(uiManager);
 
         GameObject letterManager = new GameObject();
+        letterManager.setTag("letterManager");
         letterManager.addComponent(new LetterManager());
         addGameObject(letterManager);
 
         GameObject gameManager = new GameObject();
+        gameManager.setTag("gameManager");
         gameManager.addComponent(new GameManager());
         addGameObject(gameManager);
 
-        GameManager.getInstance().cont();
-        UIManager.getInstance().scheduleTimer();
+        letterManager.getComponent(LetterManager.class).initializeManagers();
+
+        gameManager.getComponent(GameManager.class).cont();
+
+        uiManager.getComponent(UIManager.class).initializeManagers();
+        uiManager.getComponent(UIManager.class).scheduleTimer();
     }
 }

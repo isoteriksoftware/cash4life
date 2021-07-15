@@ -1,0 +1,140 @@
+{
+  "categories": [
+    {
+      "name": "automobiles",
+      "words": [
+        "Acura",
+        "Bmw",
+        "Bugatti",
+        "Chevrolet",
+        "Dodge",
+        "Impala",
+        "Jeep",
+        "Honda",
+        "Hummer",
+        "Lamborghini",
+        "Lexus",
+        "Mercedes",
+        "Mitsubishi",
+        "Opel",
+        "RoyceRolls"
+      ]
+    },
+    {
+      "name": "elements",
+      "words": [
+        "Hydrogen",
+        "Helium",
+        "Lithium",
+        "Boron",
+        "Carbon",
+        "Nitrogen",
+        "Oxygen",
+        "Sodium",
+        "Sulphur",
+        "Chlorine",
+        "Argon",
+        "Iron",
+        "Cobalt",
+        "Lead",
+        "Gold",
+        "Silver",
+        "Krypton",
+        "Bromine",
+        "Tungsten",
+        "Rutherfordium",
+        "Darmstadtium",
+        "Copernicium",
+        "Promethium",
+        "Einsteinium"
+      ]
+    },
+    {
+      "name": "countries",
+      "words": [
+        "Nigeria",
+        "Ghana",
+        "Egypt",
+        "Tanzania",
+        "Madagascar",
+        "Cameroon",
+        "Mozambique",
+        "Togo",
+        "Kenya",
+        "Ethiopia",
+        "Senegal"
+      ]
+    },
+    {
+      "name": "states",
+      "words": [
+        "Abuja",
+        "Bayelsa",
+        "Calabar",
+        "Gombe",
+        "Kwara",
+        "Lagos",
+        "Oyo",
+        "Osun",
+        "Zamfara",
+        "PortHarcourt",
+        "Abeokuta",
+        "Katsina",
+        "Kaduna",
+        "Maiduguri"
+      ]
+    },
+    {
+      "name": "planets",
+      "words": [
+        "Earth",
+        "Mars",
+        "Jupiter",
+        "Saturn",
+        "Uranus",
+        "Venus",
+        "Neptune",
+        "Mercury"
+      ]
+    },
+    {
+      "name": "languages",
+      "words": [
+        "Python",
+        "Ruby",
+        "Erlang",
+        "Java",
+        "Perl",
+        "PHP",
+        "Pascal",
+        "Cobol",
+        "Haskell",
+        "Scala",
+        "BASIC",
+        "LISP",
+        "Fortran",
+        "Smalltalk",
+        "Lua",
+        "Javascript",
+        "ECMAScript",
+        "Scheme",
+        "Delphi",
+        "Befunge"
+      ]
+    },
+    {
+      "name": "stones",
+      "words": [
+        "Diamond",
+        "Gold",
+        "Sapphire",
+        "Emerald",
+        "Ruby",
+        "Pearl",
+        "Jasper",
+        "Platinum",
+        "Silver"
+      ]
+    }
+  ]
+}

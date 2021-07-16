@@ -1,7 +1,5 @@
 package com.isoterik.cash4life.cashpuzzles;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -9,49 +7,60 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.isoterik.cash4life.DemoUser;
 import com.isoterik.cash4life.GlobalConstants;
+import com.isoterik.cash4life.UserManager;
 import com.isoterik.cash4life.cashpuzzles.components.managers.GameManager;
+import com.isoterik.cash4life.cashpuzzles.components.managers.StorageManager;
 import com.isoterik.cash4life.cashpuzzles.utils.Storage;
+import io.github.isoteriktech.xgdx.GameObject;
 import io.github.isoteriktech.xgdx.Scene;
 import io.github.isoteriktech.xgdx.ui.ActorAnimation;
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirection;
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions;
 
-import java.io.File;
 import java.util.*;
 
 public class CashPuzzlesSplash extends Scene {
-    public static final String GAME_TITLE = "Puzzles";
-
     public static final int RESOLUTION_WIDTH = 480;
     public static final int RESOLUTION_HEIGHT = 780;
 
-    private Storage storage;
+    private StorageManager storageManager;
+    private UserManager userManager;
+
+    private final Storage storage;
 
     private float modX;
     private float modY;
 
     private Skin skin;
 
-    private final HashMap<Integer, Integer> timeAndPrice = new HashMap<>();
-
-    public static final DemoUser user = new DemoUser("", "", "", 5000f);
+    private final HashMap<Float, Integer> timeAndPrice;
 
     public CashPuzzlesSplash() {
-        storage = new Json().fromJson(Storage.class, getJsonFile());
+        initializeManagers();
+
+        storage = storageManager.getStorage();
+
+        Constants constants = new Constants();
+        timeAndPrice = constants.getTimeAndPrice();
 
         setupCamera();
         setBackgroundColor(new Color(.1f, .1f, .2f, 1f));
         setupUI();
     }
 
-    private FileHandle getJsonFile() {
-        String currentPath = Gdx.files.internal(GlobalConstants.CASH_PUZZLES_ASSETS_HOME).path();
-        String fileDirectory = currentPath + File.separatorChar + "json";
-        return Gdx.files.local(fileDirectory + File.separatorChar + "storage.json");
+    private void initializeManagers() {
+        GameObject g1 = new GameObject();
+        g1.addComponent(new StorageManager());
+        addGameObject(g1);
+
+        GameObject g2 = new GameObject();
+        g2.addComponent(new UserManager());
+        addGameObject(g2);
+
+        storageManager = g1.getComponent(StorageManager.class);
+        userManager = g2.getComponent(UserManager.class);
     }
 
     private void setupCamera() {
@@ -105,7 +114,7 @@ public class CashPuzzlesSplash extends Scene {
         Button settingsBtn = new Button(skin, "settings");
         resizeUI(settingsBtn);
 
-        Label accountBalanceLabel = new Label(user.getAccountBalance(0), skin);
+        Label accountBalanceLabel = new Label(userManager.getUser().getAccountBalanceAsString(), skin);
         accountBalanceLabel.setFontScale(0.7f);
 
         Table table = new Table();
@@ -143,14 +152,6 @@ public class CashPuzzlesSplash extends Scene {
 
     private void resizeUI(Label label) {
         label.setSize(modX * label.getWidth(), modY * label.getHeight());
-    }
-
-    private void resizeUI(Label label, float sizeFactor) {
-        label.setSize(modX * label.getWidth() * sizeFactor, modY * label.getHeight() * sizeFactor);
-    }
-
-    private void resizeUI(Window window) {
-        window.setSize(modX * window.getWidth(), modY * window.getHeight());
     }
 
     private void popUpNewGameDialog() {
@@ -199,7 +200,7 @@ public class CashPuzzlesSplash extends Scene {
     private void popUpBuyTimeWindow() {
         Window window = new Window("", skin);
 
-        Label accountBalanceLabel = new Label(user.getAccountBalance(0), skin);
+        Label accountBalanceLabel = new Label(userManager.getUser().getAccountBalanceAsString(), skin);
         accountBalanceLabel.setFontScale(0.7f);
 
         Button closeBtn = new Button(skin, "close");
@@ -215,20 +216,19 @@ public class CashPuzzlesSplash extends Scene {
         resizeUI(titleLabel);
         titleLabel.setAlignment(Align.center);
 
-        loadTimeAndPrices();
         Object[] timeArray = timeAndPrice.keySet().toArray();
         Arrays.sort(timeArray);
 
         TextButton[] timeAndPricesButton = new TextButton[timeAndPrice.size()];
         String[] styleNames = new String[] {
-            "p_pink", "p_purple", "p_blue", "p_green", "p_orange"
+            "p_pink", "p_purple", "p_cyan", "p_blue", "p_green", "p_orange"
         };
         for (int i = 0; i < timeAndPricesButton.length; i++) {
-            int time = (int) timeArray[i];
+            float time = (float) timeArray[i];
             int price = timeAndPrice.get(time);
 
             String spaces = "              ";
-            String displayName = spaces + time + " minutes\n" + spaces + price + " naira";
+            String displayName = spaces + timeToString(time) + "\n" + spaces + price + " naira";
             String styleName = styleNames[i];
 
             timeAndPricesButton[i] = new TextButton(displayName, skin, styleName);
@@ -237,7 +237,7 @@ public class CashPuzzlesSplash extends Scene {
             resizeUI(timeAndPricesButton[i]);
             resizeUI(timeAndPricesButton[i], 2);
 
-            if (user.getAccountBalance() < price) {
+            if (userManager.getUser().getAccountBalance() < price) {
                 timeAndPricesButton[i].setDisabled(true);
                 timeAndPricesButton[i].getLabel().setColor(Color.GRAY);
             }
@@ -247,7 +247,7 @@ public class CashPuzzlesSplash extends Scene {
                     resetStorage();
 
                     GameManager.setLevelTime(time);
-                    user.withdraw(price);
+                    userManager.withdraw(price);
                     canvas.getActors().removeValue(window, true);
                     toGamePlayScene();
                 }
@@ -259,7 +259,7 @@ public class CashPuzzlesSplash extends Scene {
                             0,
                             0
                     );
-                    new Json().toJson(defaultState, getJsonFile());
+                    storageManager.save(defaultState);
                 }
             });
         }
@@ -291,12 +291,17 @@ public class CashPuzzlesSplash extends Scene {
         ActorAnimation.instance().slideIn(window, ActorAnimation.DOWN, .7f, Interpolation.swingOut);
     }
 
-    private void loadTimeAndPrices() {
-        timeAndPrice.put(2, 500);
-        timeAndPrice.put(5, 1000);
-        timeAndPrice.put(10, 2000);
-        timeAndPrice.put(30, 3500);
-        timeAndPrice.put(60, 7000);
+    private String timeToString(float timeInMins) {
+        String timeString = (int) timeInMins + " minutes";
+        if (timeInMins < 1f) {
+            int timeInSecs = (int) (timeInMins * 60);
+            timeString = timeInSecs + " seconds";
+        }
+        else if (timeInMins > 60f) {
+            int timeInHours = (int) (timeInMins / 60);
+            timeString = timeInHours + " hours";
+        }
+        return timeString;
     }
 
     private void toGamePlayScene() {
@@ -306,18 +311,5 @@ public class CashPuzzlesSplash extends Scene {
                         1f, SceneTransitionDirection.UP, true, Interpolation.pow5Out
                 )
         );
-    }
-
-    @Override
-    public void transitionedToThisScene(Scene previousScene) {
-        // Load the game scene.
-        // You'll modify this when a real splash UI is ready
-
-        //Timer.post(new Timer.Task() {
-        //    @Override
-        //    public void run() {
-        //        xGdx.setScene(new GamePlayScene(), SceneTransitions.fade(1f));
-        //    }
-        //});
     }
 }

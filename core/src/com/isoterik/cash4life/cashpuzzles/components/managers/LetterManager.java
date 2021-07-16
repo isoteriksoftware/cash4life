@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 public class LetterManager extends Component {
     private WordManager wordManager;
+    private UIManager uiManager;
     private GameManager gameManager;
 
     private GameObject[][] letters;
@@ -42,6 +43,7 @@ public class LetterManager extends Component {
 
     public void initializeManagers() {
         wordManager = gameObject.getHostScene().findGameObject("wordManager").getComponent(WordManager.class);
+        uiManager = gameObject.getHostScene().findGameObject("uiManager").getComponent(UIManager.class);
         gameManager = gameObject.getHostScene().findGameObject("gameManager").getComponent(GameManager.class);
     }
 
@@ -67,7 +69,7 @@ public class LetterManager extends Component {
         float yW = scene.getGameWorldUnits().getWorldWidth(), yM = column * size, yK = column + 1;
         float yOffset = (yW - yM) / yK;
 
-        float yPositionOffset = size * 2;
+        float yPositionOffset = baseSize * 2;
 
         for (int i = 0; i < row; ++i) {
             for (int j = 0; j < column; ++j) {
@@ -244,6 +246,13 @@ public class LetterManager extends Component {
         if (animatedCellsShuffle.isScheduled()) return;
 
         Timer.schedule(animatedCellsShuffle, 0.1f, 0.1f);
+        ArrayList<String> remainingWords = new ArrayList<>();
+        ArrayList<String> foundWords = wordManager.getFoundWords();
+        for (String word : wordManager.getStageWords()) {
+            if (! foundWords.contains(word))
+                remainingWords.add(word);
+        }
+        uiManager.fillWordsTable(remainingWords);
     }
 
     private GameObject getGameObjectFromCell(Cell cell) {

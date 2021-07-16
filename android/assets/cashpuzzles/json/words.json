@@ -1,6 +1,23 @@
 {
   "categories": [
     {
+      "name": "animals",
+      "words": [
+        "Giraffe",
+        "Hyena",
+        "Cheetah",
+        "Panther",
+        "Donkey",
+        "Elephant",
+        "Penguin",
+        "Crocodile",
+        "Ostrich",
+        "Kangaroo",
+        "Antelope",
+        "Vulture"
+      ]
+    },
+    {
       "name": "automobiles",
       "words": [
         "Acura",
@@ -95,6 +112,38 @@
         "Venus",
         "Neptune",
         "Mercury"
+      ]
+    },
+    {
+      "name": "players",
+      "words": [
+        "Ronaldo",
+        "Messi",
+        "Rashford",
+        "Benzeema",
+        "Marcelo",
+        "Vinicius",
+        "Mbappe",
+        "Griezmann",
+        "Haaland",
+        "Ronaldinho"
+      ]
+    },
+    {
+      "name": "randoms",
+      "words": [
+        "Undefined",
+        "Alliteration",
+        "Independence",
+        "Commensalism",
+        "Administrator",
+        "Quadrilateral",
+        "Plasmodesmata",
+        "Acetylcholine",
+        "Infrastructure",
+        "Ridiculousness",
+        "Archaebacteria",
+        "Abominably"
       ]
     },
     {

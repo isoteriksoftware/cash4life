@@ -50,6 +50,8 @@ public class Board {
             wordsCopy.remove(index);
         }
 
+        wordManager.getLoadedWords().clear();
+
         //insert each word in order
         for(String s : wordsInOrder)
             my(s); //fillCell(s);

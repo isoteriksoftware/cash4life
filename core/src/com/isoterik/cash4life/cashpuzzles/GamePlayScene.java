@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.isoterik.cash4life.GlobalConstants;
+import com.isoterik.cash4life.UserManager;
 import com.isoterik.cash4life.cashpuzzles.components.managers.*;
 import io.github.isoteriktech.xgdx.GameObject;
 import io.github.isoteriktech.xgdx.Scene;
@@ -41,6 +42,11 @@ public class GamePlayScene extends Scene {
         Transform backgroundTransform = background.transform;
         backgroundTransform.setSize(gameWorldUnits.getWorldWidth(), gameWorldUnits.getWorldHeight());
         addGameObject(background);
+
+        GameObject userManager = new GameObject();
+        userManager.setTag("userManager");
+        userManager.addComponent(new UserManager());
+        addGameObject(userManager);
 
         GameObject storageManager = new GameObject();
         storageManager.setTag("storageManager");

@@ -3,6 +3,7 @@ package com.isoterik.cash4life.cashpuzzles.components.managers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
+import com.isoterik.cash4life.UserManager;
 import com.isoterik.cash4life.cashpuzzles.CashPuzzlesSplash;
 import com.isoterik.cash4life.cashpuzzles.utils.Board;
 import com.isoterik.cash4life.cashpuzzles.utils.Storage;
@@ -12,13 +13,13 @@ import io.github.isoteriktech.xgdx.GameObject;
 import java.util.ArrayList;
 
 public class GameManager extends Component {
+    private UserManager userManager;
     private WordManager wordManager;
     private UIManager uiManager;
     private LetterManager letterManager;
     private StorageManager storageManager;
 
     private Storage storage;
-    private Preferences preferences;
 
     enum Difficulty {
         EASY,
@@ -27,7 +28,7 @@ public class GameManager extends Component {
         INSANE,
     }
 
-    private static int levelTime;
+    private static float levelTime;
 
     private Board board;
 
@@ -38,13 +39,14 @@ public class GameManager extends Component {
     private int maxLevels = 1;
     private int currentLevelIndex = 0;
 
-    private final float REWARD_AMOUNT = 10000;
+    private final float REWARD_AMOUNT = 30000;
     @Override
     public void start() {
         wordManager = gameObject.getHostScene().findGameObject("wordManager").getComponent(WordManager.class);
         uiManager = gameObject.getHostScene().findGameObject("uiManager").getComponent(UIManager.class);
         letterManager = gameObject.getHostScene().findGameObject("letterManager").getComponent(LetterManager.class);
         storageManager = gameObject.getHostScene().findGameObject("storageManager").getComponent(StorageManager.class);
+        userManager = gameObject.getHostScene().findGameObject("userManager").getComponent(UserManager.class);
 
         storage = storageManager.getStorage();
 
@@ -65,19 +67,19 @@ public class GameManager extends Component {
                 new Level("Stones", Difficulty.EASY),
                 new Level("Planets", Difficulty.EASY),
                 new Level("Countries", Difficulty.MEDIUM),
-                new Level("Automobiles", Difficulty.MEDIUM),
+                new Level("Players", Difficulty.MEDIUM),
                 new Level("Automobiles", Difficulty.MEDIUM),
                 new Level("States", Difficulty.HARD),
                 new Level("Languages", Difficulty.HARD),
-                new Level("Languages", Difficulty.HARD),
+                new Level("Animals", Difficulty.HARD),
                 new Level("Elements", Difficulty.INSANE),
-                new Level("Elements", Difficulty.INSANE),
+                new Level("Randoms", Difficulty.INSANE),
         };
     }
 
     private void initLevel() {
-        String fileName = currentLevel.categoryName;
-        wordManager.loadCategoryWords(fileName);
+        String categoryName = currentLevel.categoryName;
+        wordManager.loadCategoryWords(categoryName);
 
         ArrayList<String> words = wordManager.getStageWords();
         if (storage.isSaved()) {
@@ -119,6 +121,7 @@ public class GameManager extends Component {
     }
 
     public void currentLevelFinished() {
+        wordManager.getFoundWords().clear();
         letterManager.getValidCells().clear();
         letterManager.destroyLetters();
         destroyAllSelectors();
@@ -145,8 +148,9 @@ public class GameManager extends Component {
     }
 
     private void gameWon() {
-        CashPuzzlesSplash.user.deposit(REWARD_AMOUNT);
+        userManager.deposit(REWARD_AMOUNT);
         uiManager.gameFinished();
+        storageManager.reset();
     }
 
     public void gameOver() {
@@ -175,7 +179,7 @@ public class GameManager extends Component {
         }
     }
 
-    public static void setLevelTime(int time) {
+    public static void setLevelTime(float time) {
         levelTime = time;
     }
 

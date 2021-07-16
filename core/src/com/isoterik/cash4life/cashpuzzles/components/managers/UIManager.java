@@ -11,9 +11,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.Timer;
 import com.isoterik.cash4life.GlobalConstants;
+import com.isoterik.cash4life.UserManager;
 import com.isoterik.cash4life.cashpuzzles.CashPuzzlesSplash;
-import com.isoterik.cash4life.cashpuzzles.components.managers.GameManager;
-import com.isoterik.cash4life.cashpuzzles.components.managers.LetterManager;
+import com.isoterik.cash4life.cashpuzzles.Constants;
 import io.github.isoteriktech.xgdx.Component;
 import io.github.isoteriktech.xgdx.XGdx;
 import io.github.isoteriktech.xgdx.ui.ActorAnimation;
@@ -21,10 +21,15 @@ import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirectio
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class UIManager extends Component {
+    private UserManager userManager;
     private GameManager gameManager;
     private LetterManager letterManager;
+
+    private final HashMap<Float, Integer> timeAndPrice;
 
     private float modX;
     private float modY;
@@ -36,10 +41,6 @@ public class UIManager extends Component {
     private Skin skin;
     private Table wordsTbl;
 
-    private Button hintPowerUpBtn;
-    private Button shufflePowerUpBtn;
-    private Button addTimePowerUpBtn;
-
     private Label backBtnLabel;
     private Label levelLabel;
     private Label categoryNameLabel;
@@ -50,6 +51,9 @@ public class UIManager extends Component {
 
     public UIManager(XGdx xGdx) {
         this.xGdx = xGdx;
+
+        Constants constants = new Constants();
+        timeAndPrice = constants.getTimeAndPrice();
     }
 
     @Override
@@ -58,6 +62,7 @@ public class UIManager extends Component {
     }
 
     public void initializeManagers() {
+        userManager = gameObject.getHostScene().findGameObject("userManager").getComponent(UserManager.class);
         gameManager = gameObject.getHostScene().findGameObject("gameManager").getComponent(GameManager.class);
         letterManager = gameObject.getHostScene().findGameObject("letterManager").getComponent(LetterManager.class);
     }
@@ -73,11 +78,16 @@ public class UIManager extends Component {
             timeInMins = timeInSecs / 60f;
 
             if (timeInSecs >= 0) {
+                int hours = timeInSecs / 3600;
                 int minutes = timeInSecs / 60;
                 int seconds = timeInSecs % 60;
+
+                String hoursString = hours >= 10 ? String.valueOf(hours) : "0" + hours;
                 String minutesString = minutes >= 10 ? String.valueOf(minutes) : "0" + minutes;
                 String secondsString = seconds >= 10 ? String.valueOf(seconds) : "0" + seconds;
-                String time = minutesString + ":" + secondsString;
+                String time = hoursString + ":" + minutesString + ":" + secondsString;
+
+                if (timeInSecs <= 60) timerLabel.setColor(Color.RED);
                 timerLabel.setText(time);
             }
             else {
@@ -139,32 +149,25 @@ public class UIManager extends Component {
         wordsTbl = new Table();
         ScrollPane wordsScrollPane = new ScrollPane(wordsTbl);
 
-        hintPowerUpBtn = new Button(skin, "hint");
+        Button hintPowerUpBtn = new Button(skin, "hint");
         hintPowerUpBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                letterManager.showHint();
+                showHintPowerUp();
             }
         });
         resizeUI(hintPowerUpBtn);
 
-        addTimePowerUpBtn = new Button(skin, "add_time");
+        Button addTimePowerUpBtn = new Button(skin, "add_time");
         addTimePowerUpBtn.addListener(new ChangeListener() {
-            private final float TIME_INCREMENT = 5;
-            private final float timeIncrement = TIME_INCREMENT * 60; //In seconds
-
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                addTime();
-            }
-
-            private void addTime() {
-                timeInSecs += timeIncrement;
+                addTimePowerUp();
             }
         });
         resizeUI(addTimePowerUpBtn);
 
-        shufflePowerUpBtn = new Button(skin, "shuffle");
+        Button shufflePowerUpBtn = new Button(skin, "shuffle");
         shufflePowerUpBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -206,6 +209,10 @@ public class UIManager extends Component {
 
     private void resizeUI(Button button) {
         button.setSize(modX * button.getWidth(), modY * button.getHeight());
+    }
+
+    private void resizeUI(Button button, float sizeFactor) {
+        button.setSize(modX * button.getWidth() * sizeFactor, modY * button.getHeight() * sizeFactor);
     }
 
     private void resizeUI(Image image) {
@@ -351,5 +358,160 @@ public class UIManager extends Component {
             if (s.equalsIgnoreCase(word))
                 wordsTbl.removeActor(actor);
         }
+    }
+
+    private void showHintPowerUp() {
+        Window window = new Window("", skin);
+
+        String accountBalance = userManager.getUser().getAccountBalanceAsString();
+        int showHintPrice = 100;
+
+        String labelTitle = "Account Balance: " + accountBalance + "\n\nUse Hint?\n This will cost you N" + showHintPrice + "!";
+        Label label = new Label(labelTitle, skin);
+        label.setAlignment(Align.center);
+        label.setWrap(true);
+
+        Button yesBtn = new Button(skin, "yes");
+        resizeUI(yesBtn);
+        Button noBtn = new Button(skin, "no");
+        resizeUI(noBtn);
+
+        yesBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (userManager.getUser().getAccountBalance() >= showHintPrice) {
+                    canvas.getActors().removeValue(window, true);
+                    userManager.withdraw(showHintPrice);
+                    letterManager.showHint();
+                }
+                else {
+                    window.removeActor(yesBtn);
+                    window.removeActor(noBtn);
+                    label.setText("Insufficient Balance");
+                    Timer.schedule(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            canvas.getActors().removeValue(window, true);
+                        }
+                    }, 1f, 0f, 0);
+                }
+            }
+        });
+
+        noBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                canvas.getActors().removeValue(window, true);
+            }
+        });
+
+        //window.setDebug(true);
+        window.setFillParent(true);
+        window.padTop(20f).padBottom(20f).padRight(10f).padLeft(10f);
+        window.center();
+
+        window.add(label).center().expandX().colspan(2).padBottom(20f);
+        window.row();
+
+        window.add(noBtn).expandX().center().width(noBtn.getWidth()).height(noBtn.getHeight());
+        window.add(yesBtn).expandX().center().width(yesBtn.getWidth()).height(yesBtn.getHeight());
+
+        window.pack();
+        canvas.addActor(window);
+        ActorAnimation.instance().slideIn(window, ActorAnimation.DOWN, .7f, Interpolation.swingOut);
+    }
+
+    private void addTimePowerUp() {
+        Window window = new Window("", skin);
+
+        Label accountBalanceLabel = new Label(userManager.getUser().getAccountBalanceAsString(), skin);
+        accountBalanceLabel.setFontScale(0.7f);
+
+        Button closeBtn = new Button(skin, "close");
+        resizeUI(closeBtn);
+        closeBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                canvas.getActors().removeValue(window, true);
+            }
+        });
+
+        Label titleLabel = new Label("BUY TIME", skin, "header");
+        resizeUI(titleLabel);
+        titleLabel.setAlignment(Align.center);
+
+        Object[] timeArray = timeAndPrice.keySet().toArray();
+        Arrays.sort(timeArray);
+
+        TextButton[] timeAndPricesButton = new TextButton[timeAndPrice.size()];
+        String[] styleNames = new String[] {
+                "p_pink", "p_purple", "p_cyan", "p_blue", "p_green", "p_orange"
+        };
+        for (int i = 0; i < timeAndPricesButton.length; i++) {
+            float time = (float) timeArray[i];
+            float price = timeAndPrice.get(time);
+
+            String spaces = "              ";
+            String displayName = spaces + timeToString(time) + "\n" + spaces + price + " naira";
+            String styleName = styleNames[i];
+
+            timeAndPricesButton[i] = new TextButton(displayName, skin, styleName);
+            timeAndPricesButton[i].getLabel().setAlignment(Align.left);
+            timeAndPricesButton[i].getLabel().setFontScale(0.7f);
+            resizeUI(timeAndPricesButton[i]);
+            resizeUI(timeAndPricesButton[i], 2);
+
+            if (userManager.getUser().getAccountBalance() < price) {
+                timeAndPricesButton[i].setDisabled(true);
+                timeAndPricesButton[i].getLabel().setColor(Color.GRAY);
+            }
+            timeAndPricesButton[i].addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    timeInSecs += (time * 60);
+                    userManager.withdraw(price);
+                    canvas.getActors().removeValue(window, true);
+                }
+            });
+        }
+
+        Table timeAndPricesTable = new Table();
+        for (TextButton textButton : timeAndPricesButton) {
+            timeAndPricesTable.add(textButton).center().expandX().padBottom(50f).width(textButton.getWidth()).height(textButton.getHeight());
+            timeAndPricesTable.row();
+        }
+
+        ScrollPane scrollPane = new ScrollPane(timeAndPricesTable);
+        scrollPane.setScrollingDisabled(true, false);
+
+        //window.setDebug(true);
+        window.setFillParent(true);
+        window.padTop(20f).padBottom(20f).padRight(10f).padLeft(10f);
+        window.top();
+
+        window.add(closeBtn).left().width(closeBtn.getWidth()).height(closeBtn.getHeight());
+        window.add(accountBalanceLabel).right();
+        window.row();
+
+        window.add(titleLabel).center().colspan(2).padTop(10f).width(titleLabel.getWidth()).height(titleLabel.getHeight());
+        window.row();
+
+        window.add(scrollPane).colspan(2).expandX().padTop(20f).width(450f);
+        window.pack();
+        canvas.addActor(window);
+        ActorAnimation.instance().slideIn(window, ActorAnimation.DOWN, .7f, Interpolation.swingOut);
+    }
+
+    private String timeToString(float timeInMins) {
+        String timeString = timeInMins + " minutes";
+        if (timeInMins < 1f) {
+            int timeInSecs = (int) (timeInMins * 60);
+            timeString = timeInSecs + " seconds";
+        }
+        else if (timeInMins > 60f) {
+            int timeInHours = (int) (timeInMins / 60);
+            timeString = timeInHours + " hours";
+        }
+        return timeString;
     }
 }

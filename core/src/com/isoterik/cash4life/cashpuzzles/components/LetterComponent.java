@@ -3,7 +3,6 @@ package com.isoterik.cash4life.cashpuzzles.components;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.isoterik.cash4life.GlobalConstants;
-import com.isoterik.cash4life.cashpuzzles.components.SelectorComponent;
 import com.isoterik.cash4life.cashpuzzles.components.managers.LetterManager;
 import com.isoterik.cash4life.cashpuzzles.components.managers.WordManager;
 import io.github.isoteriktech.xgdx.Component;
@@ -42,7 +41,7 @@ public class LetterComponent extends Component {
                 selector.setTag("selector");
 
                 SelectorComponent selectorComponent = new SelectorComponent();
-                selectorComponent.setWords(wordManager.getLoadedWords());
+                selectorComponent.setLoadedWords(wordManager.getLoadedWords());
                 selectorComponent.setSize(letterManager.getSize());
                 selector.addComponent(selectorComponent);
                 addGameObject(selector);

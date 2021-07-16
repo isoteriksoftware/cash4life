@@ -23,7 +23,7 @@ public class SelectorComponent extends Component {
     private Transform transform;
     private SpriteRenderer spriteRenderer;
 
-    private ArrayList<String> words;
+    private ArrayList<String> loadedWords;
     private Board board;
     private Array<Cell> selectedWords;
     private GameObject[][] letters;
@@ -40,8 +40,8 @@ public class SelectorComponent extends Component {
     private float keepAngle;
     private float size;
 
-    public void setWords(ArrayList<String> words) {
-        this.words = words;
+    public void setLoadedWords(ArrayList<String> loadedWords) {
+        this.loadedWords = loadedWords;
     }
 
     private void initializeManagers() {
@@ -188,13 +188,13 @@ public class SelectorComponent extends Component {
     }
 
     private void validate(String selection, float angle) {
-        if (words.contains(selection) && !wordManager.getFoundWords().contains(selection)) {
+        if (loadedWords.contains(selection) && !wordManager.getFoundWords().contains(selection)) {
             keepAngle = angle;
             wordManager.getFoundWords().add(selection);
             uiManager.removeFoundWord(selection);
             keep();
 
-            boolean b1 = wordManager.getFoundWords().size() == words.size();
+            boolean b1 = wordManager.getFoundWords().size() == loadedWords.size();
             boolean b2 = wordManager.getFoundWords().size() == gameManager.getNoOfWordsToFind();
             if (b1 || b2) {
                 gameManager.currentLevelFinished();

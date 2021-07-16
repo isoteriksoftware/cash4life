@@ -2,7 +2,11 @@ package com.isoterik.cash4life
 
 object GlobalConstants {
     const val GUI_WIDTH  = 720
-    const val GUI_HEIGHT = 1280;
+    const val GUI_HEIGHT = 1280
+
+    // Shared Assets Config
+    const val SHARED_ASSETS_HOME = "shared"
+    const val SHARED_PREFERENCES = "shared_app_preferences"
 
     // Double Cash Config
     const val DOUBLE_CASH_ASSETS_HOME = "doublecash"

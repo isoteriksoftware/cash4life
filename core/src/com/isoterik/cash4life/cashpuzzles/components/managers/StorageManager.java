@@ -8,6 +8,7 @@ import com.isoterik.cash4life.cashpuzzles.utils.Storage;
 import io.github.isoteriktech.xgdx.Component;
 
 import java.io.File;
+import java.io.IOException;
 
 public class StorageManager extends Component {
     private Storage storage;
@@ -15,12 +16,25 @@ public class StorageManager extends Component {
     @Override
     public void start() {
         storage = new Json().fromJson(Storage.class, getJsonFile());
+        if (storage == null) // First time
+            storage = new Storage();
     }
 
     private FileHandle getJsonFile() {
-        String currentPath = Gdx.files.internal(GlobalConstants.CASH_PUZZLES_ASSETS_HOME).path();
-        String fileDirectory = currentPath + File.separatorChar + "json";
-        return Gdx.files.local(fileDirectory + File.separatorChar + "storage.json");
+//        String currentPath = Gdx.files.internal(GlobalConstants.CASH_PUZZLES_ASSETS_HOME).path();
+//        String fileDirectory = currentPath + File.separatorChar + "json";
+
+        FileHandle fileHandle = Gdx.files.local("storage.json");
+        System.out.println(fileHandle.path());
+        if (!fileHandle.exists()) {
+            try {
+                fileHandle.file().createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return fileHandle;
     }
 
     public Storage getStorage() {

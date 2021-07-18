@@ -7,8 +7,9 @@ public class User {
 
     private float accountBalance;
 
+    // Change this in production (balance)
     public User() {
-        this("", "", "", 0f);
+        this("", "", "", 9500f);
     }
 
     public User(String username, String email, String password, float accountBalance) {

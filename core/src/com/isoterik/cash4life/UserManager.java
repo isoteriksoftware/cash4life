@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Json;
 import io.github.isoteriktech.xgdx.Component;
 
 import java.io.File;
+import java.io.IOException;
 
 public class UserManager extends Component {
     private User user;
@@ -13,12 +14,22 @@ public class UserManager extends Component {
     @Override
     public void start() {
         user = new Json().fromJson(User.class, getJsonFile());
+        if (user ==  null)
+            user = new User();
     }
 
     private FileHandle getJsonFile() {
-        String currentPath = Gdx.files.internal(GlobalConstants.SHARED_ASSETS_HOME).path();
-        String fileDirectory = currentPath + File.separatorChar + "json";
-        return Gdx.files.local(fileDirectory + File.separatorChar + "user.json");
+        FileHandle fileHandle = Gdx.files.local("user.json");
+        System.out.println(fileHandle.path());
+        if (!fileHandle.exists()) {
+            try {
+                fileHandle.file().createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return fileHandle;
     }
 
     public User getUser() {

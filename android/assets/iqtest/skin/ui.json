@@ -1,0 +1,51 @@
+{
+  BitmapFont: {
+    font1: {
+      file: dyno_regular.fnt
+    }
+    font2: {
+      file: dyno_bold.fnt
+    }
+  }
+  Color: {
+    black: {
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    }
+    green: {
+      r: 0.3095999
+      g: 0.54
+      b: 0.40022397
+      a: 1
+    }
+    white: {
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    }
+    grey: {
+      r: 0.87
+      g: 0.87
+      b: 0.87
+      a: 1
+    }
+  }
+  TextButtonStyle: {
+    default: {
+      font: font1
+      fontColor: white
+      up: green-button
+    }
+    green: {
+      parent: default
+      up: green-button
+    }
+    blue: {
+      parent: default
+      up: blue-button
+    }
+  }
+}

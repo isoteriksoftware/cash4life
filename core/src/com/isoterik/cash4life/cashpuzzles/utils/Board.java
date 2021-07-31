@@ -13,7 +13,7 @@ public class Board {
 
     private final int rows;
     private final int columns;
-    private ArrayList<String> words;
+    private final ArrayList<String> words;
 
     private final Cell[][] cells;
 
@@ -54,7 +54,7 @@ public class Board {
 
         //insert each word in order
         for(String s : wordsInOrder)
-            my(s); //fillCell(s);
+            fillCell(s);
 
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
         char letter;
@@ -65,41 +65,6 @@ public class Board {
                     getCellAt(i,j).setLetter(letter);
                 }
             }
-        }
-    }
-
-    public void fillCell(String word) {
-        Vector2[] directions = new Vector2[] {
-                new Vector2(1, 0), new Vector2(0, 1), new Vector2(-1, 0),
-                new Vector2(0, -1), new Vector2(1, -1), new Vector2(-1, 1),
-                new Vector2(1, 1), new Vector2(-1, -1)
-        };
-
-        boolean fitted = false;
-        for (int i = 0; i < rows * columns; i++) {
-            int randX = MathUtils.random(rows - 1), randY = MathUtils.random(columns - 1);
-            Vector2 index = new Vector2(randX, randY);
-            for (int j = 0; j < directions.length; j++) {
-                Vector2 direction = directions[MathUtils.random(directions.length - 1)];
-                if (isFit(word, index, direction)) {
-                    Cell[] cells = new Cell[word.length()]; int count = 0;
-                    for (char c : word.toCharArray()) {
-                        try {
-                            getCellAt(randX, randY).setLetter(c);
-                            cells[count++] = getCellAt(randX, randY);
-                            randX += direction.x;
-                            randY += direction.y;
-                        }
-                        catch (IndexOutOfBoundsException ignored) {
-                        }
-                    }
-                    fitted = true;
-                    wordManager.addLoadedWord(word);
-                    letterManager.addValidCell(cells);
-                }
-                if (fitted) break;
-            }
-            if (fitted) break;
         }
     }
 
@@ -142,7 +107,7 @@ public class Board {
         return cells[row][column];
     }
 
-    private void my(String word) {
+    private void fillCell(String word) {
         VisitedCell[] visitedCells = new VisitedCell[rows * columns];
         initializeCells(visitedCells);
         ArrayList<VisitedCell> visited = new ArrayList<>(Arrays.asList(visitedCells));
@@ -195,8 +160,8 @@ public class Board {
     };
 
     class VisitedCell {
-        private Cell cell;
-        private ArrayList<Vector2> directions;
+        private final Cell cell;
+        private final ArrayList<Vector2> directions;
 
         public VisitedCell(Cell cell) {
             this.cell = cell;

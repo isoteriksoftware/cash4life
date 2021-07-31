@@ -21,11 +21,7 @@ public class StorageManager extends Component {
     }
 
     private FileHandle getJsonFile() {
-//        String currentPath = Gdx.files.internal(GlobalConstants.CASH_PUZZLES_ASSETS_HOME).path();
-//        String fileDirectory = currentPath + File.separatorChar + "json";
-
         FileHandle fileHandle = Gdx.files.local("storage.json");
-        System.out.println(fileHandle.path());
         if (!fileHandle.exists()) {
             try {
                 fileHandle.file().createNewFile();
@@ -50,7 +46,9 @@ public class StorageManager extends Component {
                 false,
                 null,
                 0,
-                0
+                0,
+                5,
+                3
         );
         new Json().toJson(defaultState, getJsonFile());
     }

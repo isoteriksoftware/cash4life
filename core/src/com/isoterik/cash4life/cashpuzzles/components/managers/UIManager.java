@@ -1,5 +1,7 @@
 package com.isoterik.cash4life.cashpuzzles.components.managers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
@@ -8,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.Timer;
 import com.isoterik.cash4life.GlobalConstants;
 import com.isoterik.cash4life.UserManager;
@@ -17,19 +18,14 @@ import com.isoterik.cash4life.cashpuzzles.Constants;
 import io.github.isoteriktech.xgdx.Component;
 import io.github.isoteriktech.xgdx.XGdx;
 import io.github.isoteriktech.xgdx.ui.ActorAnimation;
+import io.github.isoteriktech.xgdx.x2d.components.renderer.SpriteRenderer;
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirection;
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class UIManager extends Component {
     private UserManager userManager;
     private GameManager gameManager;
     private LetterManager letterManager;
-
-    private final HashMap<Float, Integer> timeAndPrice;
 
     private float modX;
     private float modY;
@@ -39,26 +35,38 @@ public class UIManager extends Component {
     private Stage canvas;
 
     private Skin skin;
-    private Table wordsTbl;
 
-    private Label backBtnLabel;
     private Label levelLabel;
     private Label categoryNameLabel;
     private Label timerLabel;
+    private Label hintPowerUpText;
 
     private float timeInMins;
     private int timeInSecs;
 
+    private float reloadTimeAmount;
+    private float reloadTimePrice;
+    private int reloadTimeCount;
+
+    private int showHintAmount = 3;
+
     public UIManager(XGdx xGdx) {
         this.xGdx = xGdx;
-
-        Constants constants = new Constants();
-        timeAndPrice = constants.getTimeAndPrice();
     }
 
     @Override
     public void start() {
         setupUI();
+
+        Gdx.input.setCatchKey(Input.Keys.BACK, true);
+    }
+
+    @Override
+    public void update(float deltaTime) {
+        if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
+            gameManager.saveGame();
+            toSplashScene();
+        }
     }
 
     public void initializeManagers() {
@@ -68,7 +76,7 @@ public class UIManager extends Component {
     }
 
     public void scheduleTimer() {
-        Timer.schedule(myTimerTask, 1f, 1f);
+        Timer.schedule(myTimerTask, 1f, 0.5f);
     }
 
     private final Timer.Task myTimerTask = new Timer.Task() {
@@ -91,9 +99,15 @@ public class UIManager extends Component {
                 timerLabel.setText(time);
             }
             else {
-                gameManager.gameOver();
-                cancel();
-                //myTimerTask.cancel();
+                if (reloadTimeCount > 0) {
+                    timeInSecs = (int) reloadTimeAmount;
+                    userManager.withdraw(reloadTimePrice);
+                    reloadTimeCount--;
+                }
+                else {
+                    gameManager.gameOver();
+                    cancel();
+                }
             }
         }
     };
@@ -101,14 +115,19 @@ public class UIManager extends Component {
     private void setupUI() {
         canvas = scene.getCanvas();
 
-        Image bg = new Image(xGdx.assets.regionForTexture(
-                GlobalConstants.CASH_PUZZLES_ASSETS_HOME + "/images/bg.png"
-        ));
+        Image bg = new Image(scene.findGameObject("background").getComponent(SpriteRenderer.class).getSprite());
 
         modX = canvas.getWidth() / bg.getWidth();
         modY = canvas.getHeight() / bg.getHeight();
 
         resizeUI(bg);
+
+        if (Constants.RELOAD_TIME) {
+            reloadTimePrice = Constants.RELOAD_TIME_PRICE;
+            reloadTimeCount = 5;
+        } else {
+            reloadTimeCount = 0;
+        }
 
         skin = xGdx.assets.getSkin(GlobalConstants.CASH_PUZZLES_SKIN);
         TextureAtlas uiAtlas = xGdx.assets.getAtlas(
@@ -129,52 +148,32 @@ public class UIManager extends Component {
         });
         resizeUI(btnBack);
 
-        backBtnLabel = new Label("BACK", skin, "text_bold");
-        backBtnLabel.setFontScale(0.5f);
-        backBtnLabel.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                myTimerTask.cancel();
-                toSplashScene();
-            }
-        });
-
         levelLabel = new Label("1/10", skin);
 
         categoryNameLabel = new Label("Category Name", skin);
         categoryNameLabel.setWrap(true);
+        categoryNameLabel.setFontScale(1.2f);
 
         timerLabel = new Label("00:00", skin);
 
-        wordsTbl = new Table();
-        ScrollPane wordsScrollPane = new ScrollPane(wordsTbl);
+        hintPowerUpText = new Label(showHintAmount + " / 3", skin);
+        hintPowerUpText.setColor(Color.GREEN);
 
         Button hintPowerUpBtn = new Button(skin, "hint");
         hintPowerUpBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showHintPowerUp();
+                if (showHintAmount > 0) {
+                    showHintPowerUp();
+                    showHintAmount--;
+                    hintPowerUpText.setText(showHintAmount + " / 3");
+                } else {
+                    hintPowerUpBtn.setVisible(false);
+                    hintPowerUpText.setVisible(false);
+                }
             }
         });
         resizeUI(hintPowerUpBtn);
-
-        Button addTimePowerUpBtn = new Button(skin, "add_time");
-        addTimePowerUpBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                addTimePowerUp();
-            }
-        });
-        resizeUI(addTimePowerUpBtn);
-
-        Button shufflePowerUpBtn = new Button(skin, "shuffle");
-        shufflePowerUpBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                letterManager.shuffleCells();
-            }
-        });
-        resizeUI(shufflePowerUpBtn);
 
         Table table = new Table();
         //table.setDebug(true);
@@ -183,26 +182,17 @@ public class UIManager extends Component {
         table.top();
 
         table.add(btnBack).left().width(btnBack.getWidth()).height(btnBack.getHeight());
-        //table.add(backBtnLabel).left().expandX();
         table.add(levelLabel).right();
         table.add(timerLabel).right();
         table.row();
 
-        //table.add(categoryNameLabel).left().expandX().colspan(2).padTop(10f);
-        //table.add(timerLabel).right().expandX().padTop(10f);
-        //table.row();
-
-        table.add(findImage).width(50f).padTop(15f);
-        table.add(wordsScrollPane).colspan(2).expandX().padTop(20f).width(400f).height(100f);
+        table.add(categoryNameLabel).left().expandX().colspan(3).padTop(20f);
         table.row();
 
-        Table powerUpsTbl = new Table();
-        powerUpsTbl.center().bottom();
-        powerUpsTbl.add(hintPowerUpBtn).center().width(hintPowerUpBtn.getWidth()).height(hintPowerUpBtn.getHeight()).padLeft(40f).padRight(40f);
-        powerUpsTbl.add(addTimePowerUpBtn).center().width(addTimePowerUpBtn.getWidth()).height(addTimePowerUpBtn.getHeight()).padLeft(40f).padRight(40f).padTop(10f);
-        powerUpsTbl.add(shufflePowerUpBtn).center().width(shufflePowerUpBtn.getWidth()).height(shufflePowerUpBtn.getHeight()).padLeft(40f).padRight(40f).padTop(5f);
+        table.add(hintPowerUpBtn).center().colspan(3).expandX().padTop(520).width(hintPowerUpBtn.getWidth()).height(hintPowerUpBtn.getHeight());
+        table.row();
 
-        table.add(powerUpsTbl).center().colspan(3).expandX().pad(500, 5, 0, 5);
+        table.add(hintPowerUpText).center().expandX().colspan(3).padTop(5f);
 
         canvas.addActor(table);
     }
@@ -224,34 +214,12 @@ public class UIManager extends Component {
     }
 
     private void toSplashScene() {
-        //xGdx.sceneManager.revertToPreviousScene(SceneTransitions.slide(
-        //        1f, SceneTransitionDirection.UP, true, Interpolation.pow5Out
-        //));
-
         xGdx.setScene(
                 new CashPuzzlesSplash(),
                 SceneTransitions.slide(
                         1f, SceneTransitionDirection.UP, true, Interpolation.pow5Out
                 )
         );
-    }
-
-    void fillWordsTable(ArrayList<String> words) {
-        wordsTbl.clearChildren();
-
-        int wordsTblChildrenCount = 0;
-        for (String word : words) {
-            Label wordLabel = new Label(word, skin);
-            wordLabel.setFontScale(0.7f);
-            wordLabel.setColor(Color.WHITE);
-
-            if (wordsTblChildrenCount != 0 && wordsTblChildrenCount % 3 == 0) {
-                wordsTbl.row();
-            }
-
-            wordsTbl.add(wordLabel).center().expandX().padBottom(5f);
-            wordsTblChildrenCount++;
-        }
     }
 
     public void gameFinished() {
@@ -267,7 +235,7 @@ public class UIManager extends Component {
     private void showGameWonWindow() {
         Window window = new Window("", skin);
 
-        String labelTitle = "CONGRATULATIONS! YOU'VE WON THE GAME.\n\n +N10000 has been added to your account!";
+        String labelTitle = "CONGRATULATIONS! YOU'VE WON THE GAME.\n\n +N30,000 has been added to your account!";
         Label label = new Label(labelTitle, skin, "confeti");
         label.setAlignment(Align.center);
         label.setWrap(true);
@@ -332,10 +300,24 @@ public class UIManager extends Component {
     public void setLevelTime(float levelTime) {
         timeInMins = levelTime;
         timeInSecs = (int) (timeInMins * 60);
+        reloadTimeAmount = timeInSecs;
     }
 
     public float getTimeInMins() {
         return timeInMins;
+    }
+
+    public int getReloadTimeCount() {
+        return reloadTimeCount;
+    }
+
+    public void setReloadTimeCount(int reloadTimeCount) {
+        this.reloadTimeCount = reloadTimeCount;
+    }
+
+    public void setHintPowerUpText(int hintCount) {
+        showHintAmount = hintCount;
+        hintPowerUpText.setText(hintCount + " / 3");
     }
 
     public void setLevelText(String level) {
@@ -346,18 +328,8 @@ public class UIManager extends Component {
         categoryNameLabel.setText(category);
     }
 
-    public void setAccountBalance(float amount) {
-        backBtnLabel.setText("N" + amount);
-    }
-
-    public void removeFoundWord(String word) {
-        SnapshotArray<Actor> children = wordsTbl.getChildren();
-        for (Actor actor : children) {
-            Label label = (Label) actor;
-            String s = label.getText().toString();
-            if (s.equalsIgnoreCase(word))
-                wordsTbl.removeActor(actor);
-        }
+    public int getShowHintAmount() {
+        return showHintAmount;
     }
 
     private void showHintPowerUp() {
@@ -419,99 +391,5 @@ public class UIManager extends Component {
         window.pack();
         canvas.addActor(window);
         ActorAnimation.instance().slideIn(window, ActorAnimation.DOWN, .7f, Interpolation.swingOut);
-    }
-
-    private void addTimePowerUp() {
-        Window window = new Window("", skin);
-
-        Label accountBalanceLabel = new Label(userManager.getUser().getAccountBalanceAsString(), skin);
-        accountBalanceLabel.setFontScale(0.7f);
-
-        Button closeBtn = new Button(skin, "close");
-        resizeUI(closeBtn);
-        closeBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                canvas.getActors().removeValue(window, true);
-            }
-        });
-
-        Label titleLabel = new Label("BUY TIME", skin, "header");
-        resizeUI(titleLabel);
-        titleLabel.setAlignment(Align.center);
-
-        Object[] timeArray = timeAndPrice.keySet().toArray();
-        Arrays.sort(timeArray);
-
-        TextButton[] timeAndPricesButton = new TextButton[timeAndPrice.size()];
-        String[] styleNames = new String[] {
-                "p_pink", "p_purple", "p_cyan", "p_blue", "p_green", "p_orange"
-        };
-        for (int i = 0; i < timeAndPricesButton.length; i++) {
-            float time = (float) timeArray[i];
-            float price = timeAndPrice.get(time);
-
-            String spaces = "              ";
-            String displayName = spaces + timeToString(time) + "\n" + spaces + price + " naira";
-            String styleName = styleNames[i];
-
-            timeAndPricesButton[i] = new TextButton(displayName, skin, styleName);
-            timeAndPricesButton[i].getLabel().setAlignment(Align.left);
-            timeAndPricesButton[i].getLabel().setFontScale(0.7f);
-            resizeUI(timeAndPricesButton[i]);
-            resizeUI(timeAndPricesButton[i], 2);
-
-            if (userManager.getUser().getAccountBalance() < price) {
-                timeAndPricesButton[i].setDisabled(true);
-                timeAndPricesButton[i].getLabel().setColor(Color.GRAY);
-            }
-            timeAndPricesButton[i].addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    timeInSecs += (time * 60);
-                    userManager.withdraw(price);
-                    canvas.getActors().removeValue(window, true);
-                }
-            });
-        }
-
-        Table timeAndPricesTable = new Table();
-        for (TextButton textButton : timeAndPricesButton) {
-            timeAndPricesTable.add(textButton).center().expandX().padBottom(50f).width(textButton.getWidth()).height(textButton.getHeight());
-            timeAndPricesTable.row();
-        }
-
-        ScrollPane scrollPane = new ScrollPane(timeAndPricesTable);
-        scrollPane.setScrollingDisabled(true, false);
-
-        //window.setDebug(true);
-        window.setFillParent(true);
-        window.padTop(20f).padBottom(20f).padRight(10f).padLeft(10f);
-        window.top();
-
-        window.add(closeBtn).left().width(closeBtn.getWidth()).height(closeBtn.getHeight());
-        window.add(accountBalanceLabel).right();
-        window.row();
-
-        window.add(titleLabel).center().colspan(2).padTop(10f).width(titleLabel.getWidth()).height(titleLabel.getHeight());
-        window.row();
-
-        window.add(scrollPane).colspan(2).expandX().padTop(20f).width(450f);
-        window.pack();
-        canvas.addActor(window);
-        ActorAnimation.instance().slideIn(window, ActorAnimation.DOWN, .7f, Interpolation.swingOut);
-    }
-
-    private String timeToString(float timeInMins) {
-        String timeString = timeInMins + " minutes";
-        if (timeInMins < 1f) {
-            int timeInSecs = (int) (timeInMins * 60);
-            timeString = timeInSecs + " seconds";
-        }
-        else if (timeInMins > 60f) {
-            int timeInHours = (int) (timeInMins / 60);
-            timeString = timeInHours + " hours";
-        }
-        return timeString;
     }
 }

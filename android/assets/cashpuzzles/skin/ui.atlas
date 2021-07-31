@@ -4,179 +4,158 @@ size: 2048, 2048
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
-Asset 18
-  rotate: false
-  xy: 2, 120
-  size: 1081, 1922
-  orig: 1081, 1922
-  offset: 0, 0
-  index: -1
-bg_layer
-  rotate: false
-  xy: 2, 120
-  size: 1081, 1922
-  orig: 1081, 1922
-  offset: 0, 0
-  index: -1
 back
   rotate: false
-  xy: 261, 56
+  xy: 85, 48
   size: 34, 62
   orig: 34, 62
   offset: 0, 0
   index: -1
-blue_button
+bg_layer
   rotate: false
-  xy: 1085, 1134
-  size: 595, 193
-  orig: 595, 193
+  xy: 2, 112
+  size: 1081, 1922
+  orig: 1081, 1922
   offset: 0, 0
   index: -1
 c_sm
   rotate: false
-  xy: 1085, 1686
+  xy: 1085, 1678
   size: 857, 356
   orig: 857, 356
   offset: 0, 0
   index: -1
+checkbox_off
+  rotate: false
+  xy: 179, 54
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: -1
+checkbox_off_sm
+  rotate: false
+  xy: 289, 79
+  size: 31, 31
+  orig: 31, 31
+  offset: 0, 0
+  index: -1
+checkbox_on
+  rotate: false
+  xy: 121, 54
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: -1
+checkbox_on_sm
+  rotate: false
+  xy: 322, 79
+  size: 31, 31
+  orig: 31, 31
+  offset: 0, 0
+  index: -1
 circle
   rotate: false
-  xy: 349, 88
+  xy: 355, 80
   size: 30, 30
   orig: 30, 30
   offset: 0, 0
   index: -1
 close
   rotate: false
-  xy: 297, 68
+  xy: 237, 60
   size: 50, 50
   orig: 50, 50
   offset: 0, 0
   index: -1
-close_green
+continue
   rotate: false
-  xy: 1859, 754
-  size: 136, 134
-  orig: 136, 134
-  offset: 0, 0
-  index: -1
-close_green_sh
-  rotate: false
-  xy: 1771, 33
-  size: 136, 153
-  orig: 136, 153
-  offset: 0, 0
-  index: -1
-close_red_sh
-  rotate: false
-  xy: 1909, 33
-  size: 136, 153
-  orig: 136, 153
+  xy: 1085, 3
+  size: 560, 233
+  orig: 560, 233
   offset: 0, 0
   index: -1
 continue_small
   rotate: false
-  xy: 1599, 574
+  xy: 1599, 579
   size: 412, 171
   orig: 412, 171
   offset: 0, 0
   index: -1
 dyno_regular
   rotate: false
-  xy: 1085, 287
+  xy: 1085, 238
   size: 512, 512
   orig: 512, 512
   offset: 0, 0
   index: -1
-find
-  rotate: false
-  xy: 1942, 1477
-  size: 73, 207
-  orig: 73, 207
-  offset: 0, 0
-  index: -1
 green_button
   rotate: false
-  xy: 1085, 939
+  xy: 1085, 1126
   size: 595, 193
   orig: 595, 193
   offset: 0, 0
   index: -1
 header
   rotate: false
-  xy: 1085, 801
+  xy: 1085, 988
   size: 580, 136
   orig: 580, 136
   offset: 0, 0
   index: -1
-menu
-  rotate: false
-  xy: 1682, 1050
-  size: 358, 277
-  orig: 358, 277
-  offset: 0, 0
-  index: -1
 new_game
   rotate: false
-  xy: 1085, 51
+  xy: 1085, 752
   size: 560, 234
   orig: 560, 234
   offset: 0, 0
   index: -1
 new_game_small
   rotate: false
-  xy: 1599, 402
+  xy: 1599, 407
   size: 411, 170
   orig: 411, 170
   offset: 0, 0
   index: -1
 ng_sm
   rotate: false
-  xy: 1085, 1329
+  xy: 1085, 1321
   size: 855, 355
   orig: 855, 355
   offset: 0, 0
   index: -1
 no
   rotate: false
-  xy: 1647, 188
+  xy: 1647, 774
   size: 381, 212
   orig: 381, 212
   offset: 0, 0
   index: -1
-power_up_add_time
+ok
   rotate: false
-  xy: 1859, 890
-  size: 147, 158
-  orig: 147, 158
-  offset: 0, 0
-  index: -1
-power_up_bg
-  rotate: false
-  xy: 1667, 747
-  size: 190, 190
-  orig: 190, 190
+  xy: 1647, 2
+  size: 311, 190
+  orig: 311, 190
   offset: 0, 0
   index: -1
 power_up_hint
   rotate: false
-  xy: 1647, 29
+  xy: 1682, 1162
   size: 122, 157
   orig: 122, 157
   offset: 0, 0
   index: -1
-power_up_shuffle
+settings_white
   rotate: false
-  xy: 2, 2
-  size: 161, 116
-  orig: 161, 116
+  xy: 2, 29
+  size: 81, 81
+  orig: 81, 81
   offset: 0, 0
   index: -1
-settings_icon
+yes
   rotate: false
-  xy: 165, 24
-  size: 94, 94
-  orig: 94, 94
+  xy: 1647, 194
+  size: 381, 211
+  orig: 381, 211
   offset: 0, 0
   index: -1
 
@@ -187,100 +166,72 @@ filter: Linear, Linear
 repeat: none
 action_man_bold
   rotate: false
-  xy: 1064, 538
+  xy: 1064, 1007
   size: 512, 512
   orig: 512, 512
-  offset: 0, 0
-  index: -1
-close_red
-  rotate: false
-  xy: 2, 1906
-  size: 136, 134
-  orig: 136, 134
-  offset: 0, 0
-  index: -1
-continue
-  rotate: false
-  xy: 2, 1594
-  size: 560, 233
-  orig: 560, 233
   offset: 0, 0
   index: -1
 dyno_bold
   rotate: false
-  xy: 1063, 1052
+  xy: 1084, 1521
   size: 512, 512
   orig: 512, 512
   offset: 0, 0
   index: -1
-logo
-  rotate: false
-  xy: 1065, 2
-  size: 971, 534
-  orig: 971, 534
-  offset: 0, 0
-  index: -1
-ok
-  rotate: false
-  xy: 140, 1850
-  size: 311, 190
-  orig: 311, 190
-  offset: 0, 0
-  index: -1
 p_blue
   rotate: false
-  xy: 2, 1307
+  xy: 2, 1300
   size: 1059, 257
   orig: 1059, 257
   offset: 0, 0
   index: -1
 p_blue_inactive
   rotate: false
-  xy: 2, 274
+  xy: 2, 522
   size: 1061, 258
   orig: 1061, 258
   offset: 0, 0
   index: -1
 p_cyan
   rotate: false
-  xy: 2, 534
+  xy: 2, 782
   size: 1060, 257
   orig: 1060, 257
   offset: 0, 0
   index: -1
 p_cyan_inactive
   rotate: false
-  xy: 564, 1566
+  xy: 2, 1559
   size: 1059, 257
   orig: 1059, 257
   offset: 0, 0
   index: -1
 p_orange
   rotate: false
-  xy: 2, 793
+  xy: 2, 1041
   size: 1060, 257
   orig: 1060, 257
   offset: 0, 0
   index: -1
 p_purple
   rotate: false
-  xy: 2, 14
+  xy: 2, 262
   size: 1060, 258
   orig: 1060, 258
   offset: 0, 0
   index: -1
-rectangle
+p_purple_inactive
   rotate: false
-  xy: 836, 1825
-  size: 1080, 215
-  orig: 1080, 215
+  xy: 2, 2
+  size: 1061, 258
+  orig: 1061, 258
   offset: 0, 0
   index: -1
-yes
+rectangle
   rotate: false
-  xy: 453, 1829
-  size: 381, 211
-  orig: 381, 211
+  xy: 2, 1818
+  size: 1080, 215
+  orig: 1080, 215
   offset: 0, 0
   index: -1
 
@@ -289,43 +240,37 @@ size: 2048, 2048
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
-bg
-  rotate: false
-  xy: 2, 2
-  size: 1081, 1921
-  orig: 1081, 1921
-  offset: 0, 0
-  index: -1
-
-ui4.png
-size: 2048, 2048
-format: RGBA8888
-filter: Linear, Linear
-repeat: none
 confeti
   rotate: false
-  xy: 2, 881
+  xy: 2, 785
   size: 1023, 1073
   orig: 1023, 1073
   offset: 0, 0
   index: -1
 p_orange_inactive
   rotate: false
-  xy: 2, 2
+  xy: 2, 524
   size: 1061, 259
   orig: 1061, 259
   offset: 0, 0
   index: -1
-popup
+p_pink
+  rotate: false
+  xy: 2, 2
+  size: 1060, 259
+  orig: 1060, 259
+  offset: 0, 0
+  index: -1
+p_pink_inactive
   rotate: false
   xy: 2, 263
-  size: 1055, 616
-  orig: 1055, 616
+  size: 1061, 259
+  orig: 1061, 259
   offset: 0, 0
   index: -1
 
-ui5.png
-size: 2048, 2048
+ui4.png
+size: 2048, 1024
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
@@ -338,29 +283,8 @@ p_green
   index: -1
 p_green_inactive
   rotate: false
-  xy: 2, 522
-  size: 1060, 259
-  orig: 1060, 259
-  offset: 0, 0
-  index: -1
-p_pink
-  rotate: false
-  xy: 2, 783
-  size: 1060, 259
-  orig: 1060, 259
-  offset: 0, 0
-  index: -1
-p_pink_inactive
-  rotate: false
-  xy: 2, 1044
-  size: 1061, 259
-  orig: 1061, 259
-  offset: 0, 0
-  index: -1
-p_purple_inactive
-  rotate: false
   xy: 2, 262
-  size: 1061, 258
-  orig: 1061, 258
+  size: 1060, 259
+  orig: 1060, 259
   offset: 0, 0
   index: -1

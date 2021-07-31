@@ -20,7 +20,6 @@ public class UserManager extends Component {
 
     private FileHandle getJsonFile() {
         FileHandle fileHandle = Gdx.files.local("user.json");
-        System.out.println(fileHandle.path());
         if (!fileHandle.exists()) {
             try {
                 fileHandle.file().createNewFile();

@@ -9,7 +9,7 @@ public class User {
 
     // Change this in production (balance)
     public User() {
-        this("", "", "", 9500f);
+        this("", "", "", 10000f);
     }
 
     public User(String username, String email, String password, float accountBalance) {
@@ -56,9 +56,7 @@ public class User {
         StringBuilder balanceAsString = new StringBuilder(String.valueOf((int) accountBalance));
 
         int n = balanceAsString.length();
-        if (n == 4) balanceAsString.insert(1, ',');
-        else if (n == 5) balanceAsString.insert(2, ',');
-        else if (n == 6) balanceAsString.insert(3, 'c');
+        if (n >= 4 && n <= 6) balanceAsString.insert(n - 3, ',');
 
         return "N" + balanceAsString;
     }

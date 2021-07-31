@@ -11,6 +11,7 @@ import io.github.isoteriktech.xgdx.Scene;
 import io.github.isoteriktech.xgdx.Transform;
 import io.github.isoteriktech.xgdx.ui.ActorAnimation;
 import io.github.isoteriktech.xgdx.utils.GameWorldUnits;
+import io.github.isoteriktech.xgdx.x2d.components.renderer.SpriteRenderer;
 
 public class GamePlayScene extends Scene {
     public GamePlayScene() {
@@ -39,6 +40,8 @@ public class GamePlayScene extends Scene {
         GameObject background = newSpriteObject(
                 this.xGdx.assets.getTexture(GlobalConstants.CASH_PUZZLES_ASSETS_HOME + "/images/bg.png")
         );
+        background.setTag("background");
+        background.getComponent(SpriteRenderer.class).setColor(new Color(250f/255f, 168f/255f, 71f/255f, 1f));
         Transform backgroundTransform = background.transform;
         backgroundTransform.setSize(gameWorldUnits.getWorldWidth(), gameWorldUnits.getWorldHeight());
         addGameObject(background);

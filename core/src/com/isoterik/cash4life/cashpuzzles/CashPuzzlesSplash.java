@@ -70,9 +70,12 @@ public class CashPuzzlesSplash extends Scene {
     }
 
     private void setupUI() {
+        Color milk = new Color(250f/255f, 168f/255f, 71f/255f, 1f);
+
         Image bg = new Image(this.xGdx.assets.regionForTexture(
                 GlobalConstants.CASH_PUZZLES_ASSETS_HOME + "/images/bg.png"
         ));
+        bg.setColor(milk);
 
         modX = canvas.getWidth() / bg.getWidth();
         modY = canvas.getHeight() / bg.getHeight();
@@ -91,6 +94,7 @@ public class CashPuzzlesSplash extends Scene {
         newGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                //userManager.deposit(10000);
                 if (storage.isSaved()) {
                     popUpNewGameDialog();
                 }
@@ -112,10 +116,12 @@ public class CashPuzzlesSplash extends Scene {
         resizeUI(continueBtn);
 
         Button settingsBtn = new Button(skin, "settings");
+        settingsBtn.setColor(Color.GREEN);
         resizeUI(settingsBtn);
 
         Label accountBalanceLabel = new Label(userManager.getUser().getAccountBalanceAsString(), skin);
         accountBalanceLabel.setFontScale(0.7f);
+        accountBalanceLabel.setColor(Color.GREEN);
 
         Table table = new Table();
         //table.setDebug(true);
@@ -216,6 +222,16 @@ public class CashPuzzlesSplash extends Scene {
         resizeUI(titleLabel);
         titleLabel.setAlignment(Align.center);
 
+        CheckBox reloadTime = new CheckBox("Reload Time?", skin);
+        //reloadTime.getCells().get(0).size(10, 10);
+        reloadTime.getLabel().setFontScale(0.7f);
+        reloadTime.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Constants.RELOAD_TIME = reloadTime.isChecked();
+            }
+        });
+
         Object[] timeArray = timeAndPrice.keySet().toArray();
         Arrays.sort(timeArray);
 
@@ -244,22 +260,13 @@ public class CashPuzzlesSplash extends Scene {
             timeAndPricesButton[i].addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    resetStorage();
+                    storageManager.reset();
 
                     GameManager.setLevelTime(time);
+                    Constants.RELOAD_TIME_PRICE = price;
                     userManager.withdraw(price);
                     canvas.getActors().removeValue(window, true);
                     toGamePlayScene();
-                }
-
-                private void resetStorage() {
-                    Storage defaultState = new Storage(
-                            false,
-                            null,
-                            0,
-                            0
-                    );
-                    storageManager.save(defaultState);
                 }
             });
         }
@@ -283,6 +290,9 @@ public class CashPuzzlesSplash extends Scene {
         window.row();
 
         window.add(titleLabel).center().colspan(2).padTop(10f).width(titleLabel.getWidth()).height(titleLabel.getHeight());
+        window.row();
+
+        window.add(reloadTime).center().colspan(2).padTop(10f);
         window.row();
 
         window.add(scrollPane).colspan(2).expandX().padTop(20f).width(450f);

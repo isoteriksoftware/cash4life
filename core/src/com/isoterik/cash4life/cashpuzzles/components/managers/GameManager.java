@@ -1,10 +1,7 @@
 package com.isoterik.cash4life.cashpuzzles.components.managers;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
 import com.isoterik.cash4life.UserManager;
-import com.isoterik.cash4life.cashpuzzles.CashPuzzlesSplash;
 import com.isoterik.cash4life.cashpuzzles.utils.Board;
 import com.isoterik.cash4life.cashpuzzles.utils.Storage;
 import io.github.isoteriktech.xgdx.Component;
@@ -64,14 +61,14 @@ public class GameManager extends Component {
 
     private void setLevels() {
         levels = new Level[]{
-                new Level("Stones", Difficulty.EASY),
-                new Level("Planets", Difficulty.EASY),
+                new Level("Stones", Difficulty.INSANE),
+                new Level("Planets", Difficulty.MEDIUM),
                 new Level("Countries", Difficulty.MEDIUM),
                 new Level("Players", Difficulty.MEDIUM),
-                new Level("Automobiles", Difficulty.MEDIUM),
+                new Level("Automobiles", Difficulty.HARD),
                 new Level("States", Difficulty.HARD),
                 new Level("Languages", Difficulty.HARD),
-                new Level("Animals", Difficulty.HARD),
+                new Level("Animals", Difficulty.INSANE),
                 new Level("Elements", Difficulty.INSANE),
                 new Level("Randoms", Difficulty.INSANE),
         };
@@ -82,17 +79,6 @@ public class GameManager extends Component {
         wordManager.loadCategoryWords(categoryName);
 
         ArrayList<String> words = wordManager.getStageWords();
-        if (storage.isSaved()) {
-            ArrayList<String> remainingWords = new ArrayList<>();
-            ArrayList<String> foundWords = storage.getFoundWords();
-            for (String word : words) {
-                if (! foundWords.contains(word))
-                    remainingWords.add(word);
-            }
-            uiManager.fillWordsTable(remainingWords);
-        }
-        else
-            uiManager.fillWordsTable(words);
 
         int[] boardDimensions = currentLevel.dimensions;
         int boardRow = boardDimensions[0], boardColumn = boardDimensions[1];
@@ -112,6 +98,8 @@ public class GameManager extends Component {
         if (storage.isSaved()) {
             uiManager.setLevelTime(storage.getTime());
             wordManager.setFoundWords(storage.getFoundWords());
+            uiManager.setReloadTimeCount(storage.getTimeReloadCount());
+            uiManager.setHintPowerUpText(storage.getHintCount());
             letterManager.shuffleCells();
         }
         else {
@@ -138,11 +126,15 @@ public class GameManager extends Component {
     }
 
     public void saveGame() {
+        if (currentLevelIndex <= 4) return;
+
         Storage s = new Storage(
                 true,
                 wordManager.getFoundWords(),
                 currentLevelIndex,
-                uiManager.getTimeInMins()
+                uiManager.getTimeInMins(),
+                uiManager.getReloadTimeCount(),
+                uiManager.getShowHintAmount()
         );
         storageManager.save(s);
     }
@@ -154,6 +146,7 @@ public class GameManager extends Component {
     }
 
     public void gameOver() {
+        storageManager.reset();
         uiManager.gameLost();
     }
 

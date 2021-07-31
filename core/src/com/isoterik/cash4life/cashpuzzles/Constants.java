@@ -8,18 +8,19 @@ public final class Constants {
 
     private final HashMap<Float, Integer> timeAndPrice;
 
+    public static boolean RELOAD_TIME = false;
+    public static float RELOAD_TIME_PRICE = 0f;
+
     public Constants() {
         timeAndPrice = new HashMap<>();
         loadTimeAndPrices();
     }
 
     private void loadTimeAndPrices() {
-        timeAndPrice.put(0.5f, 100);
-        timeAndPrice.put(30f, 300);
-        timeAndPrice.put(60f, 500);
-        timeAndPrice.put(120f, 1000);
-        timeAndPrice.put(180f, 2000);
-        timeAndPrice.put(300f, 3500);
+        timeAndPrice.put(30f, 500);
+        timeAndPrice.put(60f, 1000);
+        timeAndPrice.put(120f, 2000);
+        timeAndPrice.put(180f, 3000);
     }
 
     public HashMap<Float, Integer> getTimeAndPrice() {

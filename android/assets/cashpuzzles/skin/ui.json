@@ -97,7 +97,7 @@
       up: back
     }
     settings: {
-      up: settings_icon
+      up: settings_white
     }
     yes: {
       up: yes
@@ -108,32 +108,19 @@
     ok: {
       up: ok
     }
-    powerup: {
-      up: rectangle
-    },
     close: {
       up: close
     }
-    close_green: {
-      up: close_green
-    }
-    close_green_sh: {
-      up: close_green_sh
-    }
-    close_red: {
-      up: close_red
-    }
-    close_red_sh: {
-      up: close_red_sh
-    },
     hint: {
       up: power_up_hint
     }
-    add_time: {
-      up: power_up_add_time
-    }
-    shuffle: {
-      up: power_up_shuffle
+  }
+  CheckBoxStyle: {
+    default: {
+      checkboxOn: checkbox_on_sm
+      checkboxOff: checkbox_off_sm
+      font: font3
+      fontColor: green
     }
   }
   TextButtonStyle: {
@@ -182,17 +169,7 @@
   LabelStyle: {
     default: {
       font: font2
-      fontColor: gold
-    }
-    confeti: {
-      font: font3
-      fontColor: white
-      background: confeti
-    }
-    popup: {
-      font: font3
-      fontColor: white
-      background: popup
+      fontColor: green
     }
     text_regular: {
       font: font2
@@ -211,16 +188,17 @@
       fontColor: black
       background: header
     }
+    confeti: {
+      font: font3
+      fontColor: white
+      background: confeti
+    }
   }
   WindowStyle: {
     default: {
       titleFont: font2
       titleFontColor: black
       stageBackground: translucent
-    }
-    dialog: {
-      parent: default
-      background: popup
     }
   }
 }

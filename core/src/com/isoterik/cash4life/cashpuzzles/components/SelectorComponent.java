@@ -191,7 +191,6 @@ public class SelectorComponent extends Component {
         if (loadedWords.contains(selection) && !wordManager.getFoundWords().contains(selection)) {
             keepAngle = angle;
             wordManager.getFoundWords().add(selection);
-            uiManager.removeFoundWord(selection);
             keep();
 
             boolean b1 = wordManager.getFoundWords().size() == loadedWords.size();

@@ -54,7 +54,7 @@ public class UserManager extends Component {
                 "",
                 "",
                 "",
-                0
+                10000
         );
         new Json().toJson(defaultState, getJsonFile());
     }

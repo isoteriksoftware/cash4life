@@ -257,6 +257,7 @@ public class CashPuzzlesSplash extends Scene {
                 timeAndPricesButton[i].setDisabled(true);
                 timeAndPricesButton[i].getLabel().setColor(Color.GRAY);
             }
+
             timeAndPricesButton[i].addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {

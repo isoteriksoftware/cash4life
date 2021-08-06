@@ -90,5 +90,9 @@ class GlobalUtil {
             label.setSize(modX * label.width, modY * label.height)
         }
 
+        fun resizeUI(label: Label, sizeFactor: Float) {
+            label.setSize(label.width * sizeFactor, label.height * sizeFactor)
+        }
+
     }
 }

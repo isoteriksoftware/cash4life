@@ -7,7 +7,7 @@ import io.github.isoteriktech.xgdx.Transform
 import io.github.isoteriktech.xgdx.input.InputManager
 
 class LetterOption : Component() {
-    var index: Int = -1
+    var character: Char = ' '
 
     private var transform: Transform = Transform()
 

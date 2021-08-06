@@ -5,8 +5,8 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.utils.Array
 import com.isoterik.cash4life.GlobalConstants
 import com.isoterik.cash4life.GlobalUtil
+import com.isoterik.cash4life.UserManager
 import com.isoterik.cash4life.iqtest.IQTestSplash
-import com.isoterik.cash4life.iqtest.scenes.CompleteSpelling
 import io.github.isoteriktech.xgdx.Component
 import io.github.isoteriktech.xgdx.GameObject
 import io.github.isoteriktech.xgdx.Transform
@@ -16,13 +16,15 @@ import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
 import java.util.*
 import kotlin.random.Random
 
-class GameManager : Component() {
+class SpellingGameManager : Component() {
     private val whiteLettersAtlas = XGdx.instance().assets.getAtlas(
         GlobalConstants.IQ_TEST_ASSETS_HOME + "/spritesheets/white.atlas"
     )
     private val blackLettersAtlas = XGdx.instance().assets.getAtlas(
         GlobalConstants.IQ_TEST_ASSETS_HOME + "/spritesheets/black.atlas"
     )
+
+    private val REWARD_AMOUNT = 10000f
 
     private var wordsArrayCount = 0
     var wordsArray = Array<String>()
@@ -37,11 +39,14 @@ class GameManager : Component() {
 
     fun startLevel() {
         if (wordsArrayCount >= wordsArray.size) {
-            gameWon()
+            scene.findGameObject("uiManager").getComponent(UIManager::class.java).gameFinished()
+            scene.findGameObject("userManager").getComponent(UserManager::class.java).deposit(REWARD_AMOUNT)
             return
         }
 
         clearScreen()
+
+        scene.findGameObject("uiManager").getComponent(UIManager::class.java).updateLevelText()
 
         val wordToFind = wordsArray[wordsArrayCount++]
 
@@ -57,7 +62,9 @@ class GameManager : Component() {
         letterManager.missingLettersGameObjects = getMissingLettersGameObjects(strippedWordGameObjects, strippedWord)
 
         GlobalUtil.resizeTransforms(strippedWordTransforms, 0.15f)
-        GlobalUtil.centerDistributeEvenly(strippedWordTransforms)
+        //GlobalUtil.centerDistributeEvenly(strippedWordTransforms)
+        val yPosition = (scene.gameWorldUnits.worldHeight - strippedWordTransforms[0].height) / 2f
+        horizontalDistributeEvenly(strippedWordTransforms, yPosition)
 
         addGameObjects(strippedWordGameObjects)
 
@@ -67,29 +74,19 @@ class GameManager : Component() {
         GlobalUtil.resizeTransforms(letterOptionsTransform, 0.15f)
         GlobalUtil.horizontalDistributeEvenly(letterOptionsTransform, 1f)
 
-        addComponents(letterOptionsGameObject, LetterOption::class.java)
+        // addComponents(letterOptionsGameObject, LetterOption::class.java)
 
-        setLetterOptionComponentIndices(letterOptionsGameObject)
         addGameObjects(letterOptionsGameObject)
     }
 
-    private fun gameWon() {
-        xGdx.setScene(
-            IQTestSplash(), SceneTransitions.slide(1f, SceneTransitionDirection.UP,
-                true, Interpolation.pow5Out))
-    }
-
-    private fun clearScreen() {
+    fun clearScreen() {
         removeGameObjects(scene.findGameObjects("blackLetter"))
         removeGameObjects(scene.findGameObjects("whiteLetter"))
     }
 
     private fun removeGameObjects(gameObjects: Array<GameObject>) {
-        for (gameObject in gameObjects) {
-            if (gameObject.tag == "blackLetter")
-                gameObject.removeComponent(LetterOption::class.java)
+        for (gameObject in gameObjects)
             removeGameObject(gameObject)
-        }
     }
 
     private fun addGameObjects(gameObjects: Array<GameObject>) {
@@ -163,11 +160,14 @@ class GameManager : Component() {
     private fun createLetterOptionsGameObject(missingLetters: Array<Char>): Array<GameObject> {
         val availableOptions = 7
         val options = generateRandomLetters(missingLetters, availableOptions)
-        letterManager.options = options
 
         val gameObjects = Array<GameObject>()
         for (option in options) {
             val gameObject = createLetterGameObject(option, whiteLettersAtlas, true)
+            val component = LetterOption()
+            component.character = option
+            gameObject.addComponent(component)
+
             gameObjects.add(gameObject)
         }
 
@@ -176,9 +176,7 @@ class GameManager : Component() {
 
     private fun generateRandomLetters(from: Array<Char>, limit: Int): Array<Char> {
         val options = "abcdefghijklmnopqrstuvwxyz"
-        var optionsArray = Array<Char>()
-        for (char in options)
-            if (!from.contains(char)) optionsArray.add(char)
+        val optionsArray = options.toCharArray()
         val optionsSize = optionsArray.size
 
         val fromSize = from.size
@@ -203,9 +201,53 @@ class GameManager : Component() {
         }
     }
 
-    private fun setLetterOptionComponentIndices(gameObjects: Array<GameObject>) {
-        for (index in 0 until gameObjects.size) {
-            gameObjects[index].getComponent(LetterOption::class.java).index = index
+    private fun horizontalDistributeEvenly(transforms: Array<Transform>, yPosition: Float) {
+        val worldWidth = scene.gameWorldUnits.worldWidth
+        val transformWidth = transforms[0].width
+        val transformHeight = transforms[0].height
+        val transformsSize = transforms.size
+
+        if (transformsSize > 17) return
+
+        var case1 = transformsSize in 7..11
+        var case2 = transformsSize in 13..17
+
+        var yPos = yPosition
+
+        if (case1) yPos = yPosition + (transformHeight * 1)
+        else if (case2) yPos = yPosition + (transformHeight * 2)
+
+        val size = 7
+        var counter = 0
+        val xOffset = (worldWidth - ((size - 1) * transformWidth)) / (size)
+        for ((index, transform) in transforms.withIndex()) {
+            if (index > 6) break
+            val xPosition = xOffset + (xOffset * counter) + (transformWidth * counter)
+            transform.setPosition(xPosition, yPos)
+            counter++
+        }
+
+        if (case1) yPos = yPosition - (transformHeight * 1)
+        else if (case2) yPos = yPosition + (transformHeight * 0)
+
+        counter = 0
+        for ((index, transform) in transforms.withIndex()) {
+            if (index < 6) continue
+            if (index > 11) break
+            val xPosition = xOffset + (xOffset * counter) + (transformWidth * counter)
+            transform.setPosition(xPosition, yPos)
+            counter++
+        }
+
+        if (case2) yPos = yPosition - (transformHeight * 2)
+
+        counter = 0
+        for ((index, transform) in transforms.withIndex()) {
+            if (index < 11) continue
+            if (index > 16) break
+            val xPosition = xOffset + (xOffset * counter) + (transformWidth * counter)
+            transform.setPosition(xPosition, yPos)
+            counter++
         }
     }
 }

@@ -31,22 +31,24 @@ class SpellingGameManager : Component() {
 
     lateinit var xGdx: XGdx
 
-    lateinit var letterManager: LetterManager
+    private lateinit var uiManager: UIManager
+    private lateinit var letterManager: LetterManager
 
     fun init() {
-        letterManager = gameObject.hostScene.findGameObject("letterManager").getComponent(LetterManager::class.java)
+        uiManager = scene.findGameObject("uiManager").getComponent(UIManager::class.java)
+        letterManager = scene.findGameObject("letterManager").getComponent(LetterManager::class.java)
     }
 
     fun startLevel() {
         if (wordsArrayCount >= wordsArray.size) {
-            scene.findGameObject("uiManager").getComponent(UIManager::class.java).gameFinished()
+            uiManager.gameFinished()
             scene.findGameObject("userManager").getComponent(UserManager::class.java).deposit(REWARD_AMOUNT)
             return
         }
 
         clearScreen()
 
-        scene.findGameObject("uiManager").getComponent(UIManager::class.java).updateLevelText()
+        uiManager.updateLevelText()
 
         val wordToFind = wordsArray[wordsArrayCount++]
 
@@ -54,6 +56,7 @@ class SpellingGameManager : Component() {
         val strippedWord = getStrippedWord(wordToFind, numberOfMissingLetters)
         val missingLetters = getMissingLetters(wordToFind, strippedWord)
 
+        uiManager.setTaps(numberOfMissingLetters)
         letterManager.missingLetters = missingLetters
 
         val strippedWordGameObjects = createStrippedWordGameObjects(strippedWord)
@@ -202,6 +205,8 @@ class SpellingGameManager : Component() {
     }
 
     private fun horizontalDistributeEvenly(transforms: Array<Transform>, yPosition: Float) {
+        if (transforms.isEmpty) return
+
         val worldWidth = scene.gameWorldUnits.worldWidth
         val transformWidth = transforms[0].width
         val transformHeight = transforms[0].height
@@ -209,8 +214,8 @@ class SpellingGameManager : Component() {
 
         if (transformsSize > 17) return
 
-        var case1 = transformsSize in 7..11
-        var case2 = transformsSize in 13..17
+        val case1 = transformsSize in 7..11
+        val case2 = transformsSize in 13..17
 
         var yPos = yPosition
 

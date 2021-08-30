@@ -7,36 +7,59 @@ import com.badlogic.gdx.utils.JsonReader
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import com.isoterik.cash4life.GlobalConstants
 import com.isoterik.cash4life.GlobalUtil
+import com.isoterik.cash4life.UserManager
 import com.isoterik.cash4life.iqtest.Constants
-import com.isoterik.cash4life.iqtest.components.SpellingGameManager
-import com.isoterik.cash4life.iqtest.components.LetterManager
-import com.isoterik.cash4life.iqtest.components.SentenceGameManager
+import com.isoterik.cash4life.iqtest.components.*
 import io.github.isoteriktech.xgdx.GameObject
 import io.github.isoteriktech.xgdx.Scene
 import io.github.isoteriktech.xgdx.ui.ActorAnimation
 import io.github.isoteriktech.xgdx.utils.GameWorldUnits
 
 class CompleteSentence : Scene() {
-    lateinit var gameManagerGameObject: GameObject
-    lateinit var sentenceGameManager: SentenceGameManager
+    private var levelTime: Float = 0.0f
 
-    lateinit var sentenceManagerGameObject: GameObject
-    lateinit var sentenceManager: LetterManager
+    private lateinit var userManager: UserManager
+
+    private lateinit var uiManager: UIManager
+
+    private lateinit var sentenceGameManager: SentenceGameManager
+
+    private lateinit var sentenceComponent: SentenceComponent
+
+    private lateinit var sentenceManager: SentenceManager
 
     private fun initManagers() {
-        sentenceManagerGameObject = GameObject()
+        val userManagerGameObject = GameObject()
+        userManagerGameObject.tag = "userManager"
+        userManager = UserManager()
+        userManagerGameObject.addComponent(userManager)
+        addGameObject(userManagerGameObject)
+
+        val uiManagerGameObject = GameObject()
+        uiManagerGameObject.tag = "uiManager"
+        uiManager = UIManager(xGdx, 1)
+        uiManagerGameObject.addComponent(uiManager)
+        addGameObject(uiManagerGameObject)
+
+        val sentenceManagerGameObject = GameObject()
         sentenceManagerGameObject.tag = "sentenceManager"
-        sentenceManager = LetterManager()
+        sentenceManager = SentenceManager()
         sentenceManagerGameObject.addComponent(sentenceManager)
         addGameObject(sentenceManagerGameObject)
 
-        gameManagerGameObject = GameObject()
+        val gameManagerGameObject = GameObject()
         gameManagerGameObject.tag = "gameManager"
         sentenceGameManager = SentenceGameManager()
         gameManagerGameObject.addComponent(sentenceGameManager)
         addGameObject(gameManagerGameObject)
         sentenceGameManager.xGdx = xGdx
         sentenceGameManager.init()
+
+        val sentenceComponentGameObject = GameObject()
+        sentenceComponentGameObject.tag = "sentenceComponent"
+        sentenceComponent = SentenceComponent()
+        sentenceComponentGameObject.addComponent(sentenceComponent)
+        addGameObject(sentenceComponentGameObject)
     }
 
     private fun setUpCamera() {
@@ -56,6 +79,9 @@ class CompleteSentence : Scene() {
 
     init {
         setUpCamera()
+    }
+
+    fun init() {
         initManagers()
 
         val background = newSpriteObject(xGdx.assets.getTexture("${GlobalConstants.IQ_TEST_ASSETS_HOME}/images/background-png.png"))
@@ -63,19 +89,18 @@ class CompleteSentence : Scene() {
         background.transform.setSize(gameWorldUnits.worldWidth, gameWorldUnits.worldHeight)
         addGameObject(background)
 
-        val sentencesJsonData = JsonReader().parse(Gdx.files.internal("${GlobalConstants.IQ_TEST_ASSETS_HOME}/json/complete_sentence.json"))
-        val sentencesArray = sentencesJsonData.get("sentences").asStringArray()
-        val gameManagerSentencesArray = getArrayFromStringArray(sentencesArray)
-        gameManagerSentencesArray.shuffle()
-        sentenceGameManager.sentencesArray = gameManagerSentencesArray
+        val sentences = sentenceComponent.sentences
+        sentenceGameManager.sentences = sentences
+
+        uiManager.setMaxLevels(sentences.size)
+        uiManager.setLevelTime(levelTime)
+
         sentenceGameManager.startLevel()
+
+        uiManager.scheduleTimer()
     }
 
-    private fun getArrayFromStringArray(stringArray: kotlin.Array<String>): Array<String> {
-        val result = Array<String>()
-        for (string in stringArray)
-            result.add(string)
-
-        return result
+    fun setTime(time: Float) {
+        levelTime = time
     }
 }

@@ -20,8 +20,9 @@ import io.github.isoteriktech.xgdx.ui.ActorAnimation
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirection
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
 
-class UIManager(xGdx: XGdx) : Component() {
-    private val xGdx: XGdx
+class UIManager(xGdx: XGdx, sceneIndex: Int) : Component() {
+    private val xGdx: XGdx = xGdx
+    private val sceneIndex: Int = sceneIndex
 
     private lateinit var skin: Skin
 
@@ -29,6 +30,7 @@ class UIManager(xGdx: XGdx) : Component() {
 
     private lateinit var levelLabel: Label
     private lateinit var timerLabel: Label
+    private lateinit var maxTapsLabel: Label
 
     private var timeInMins = 0f
     private var timeInSecs = 0
@@ -36,9 +38,8 @@ class UIManager(xGdx: XGdx) : Component() {
     private var currentLevelIndex = 0
     private var maxLevels = 0
 
-    init {
-        this.xGdx = xGdx
-    }
+    var tapCount = 0
+    var maxTaps = 0
 
     override fun start() {
         setupUI()
@@ -73,8 +74,10 @@ class UIManager(xGdx: XGdx) : Component() {
 
         timerLabel = Label("00:00", skin)
 
+        maxTapsLabel = Label("Taps: $tapCount / $maxTaps", skin)
+
         val table = Table()
-        table.debug = true;
+        //table.debug = true;
         table.setFillParent(true)
         table.padTop(20f).padBottom(20f).padRight(10f).padLeft(10f)
         table.top()
@@ -82,6 +85,9 @@ class UIManager(xGdx: XGdx) : Component() {
         table.add(btnBack).left().width(btnBack.width).height(btnBack.height).expandX()
         table.add(levelLabel).center().expandX()
         table.add(timerLabel).right().expandX()
+        table.row()
+
+        table.add(maxTapsLabel).left().expandX().padTop(10f)
         table.row()
 
         canvas.addActor(table)
@@ -124,6 +130,17 @@ class UIManager(xGdx: XGdx) : Component() {
         currentLevelIndex++
     }
 
+    fun setTaps(amount: Int) {
+        tapCount = 0
+        maxTaps = amount
+        maxTapsLabel.setText("Taps: $tapCount / $maxTaps")
+    }
+
+    fun updateMaxTapsLabel() {
+        tapCount++
+        maxTapsLabel.setText("Taps: $tapCount / $maxTaps")
+    }
+
     fun scheduleTimer() {
         Timer.schedule(myTimerTask, 1f, 1f)
     }
@@ -139,10 +156,13 @@ class UIManager(xGdx: XGdx) : Component() {
 
     private fun showGameWonWindow() {
         // Clear all contents of the board to avoid user interaction with one of the letter gameobjects
-        scene.findGameObject("gameManager").getComponent(SpellingGameManager::class.java).clearScreen()
+        if (sceneIndex == 0)
+            scene.findGameObject("gameManager").getComponent(SpellingGameManager::class.java).clearScreen()
+        else if (sceneIndex == 1)
+            scene.findGameObject("gameManager").getComponent(SentenceGameManager::class.java).clearScreen()
 
         val window = Window("", skin)
-        val labelTitle = "CONGRATULATIONS! YOU'VE WON THE GAME.\n\n +N30,000 has been added to your account!"
+        val labelTitle = "CONGRATULATIONS! YOU'VE WON THE GAME.\n\n +N10,000 has been added to your account!"
         val label = Label(labelTitle, skin, "confeti")
         label.setAlignment(Align.center)
         label.wrap = true
@@ -169,7 +189,10 @@ class UIManager(xGdx: XGdx) : Component() {
 
     private fun showGameOverWindow() {
         // Clear all contents of the board to avoid user interaction with one of the letter gameobjects
-        scene.findGameObject("gameManager").getComponent(SpellingGameManager::class.java).clearScreen()
+        if (sceneIndex == 0)
+            scene.findGameObject("gameManager").getComponent(SpellingGameManager::class.java).clearScreen()
+        else if (sceneIndex == 1)
+            scene.findGameObject("gameManager").getComponent(SentenceGameManager::class.java).clearScreen()
 
         val window = Window("", skin)
         val labelTitle = "OOPS! TIME'S UP.\n You can do better!"

@@ -11,9 +11,11 @@ class LetterOption : Component() {
 
     private var transform: Transform = Transform()
 
-    lateinit var letterManager: LetterManager
+    private lateinit var uiManager: UIManager
+    private lateinit var letterManager: LetterManager
 
     private fun initManagers() {
+        uiManager = scene.findGameObject("uiManager").getComponent(UIManager::class.java)
         letterManager = scene.findGameObject("letterManager").getComponent(LetterManager::class.java)
     }
 
@@ -27,6 +29,7 @@ class LetterOption : Component() {
     }
 
     private fun onTouch() {
+        if (scene == null) return
         if (input.isTouched) {
             val touchPos = Vector2(input.touchedX, input.touchedY)
             val withinBounds = touchPos.x >= transform.x &&
@@ -34,7 +37,12 @@ class LetterOption : Component() {
                     touchPos.y >= transform.y
                     && touchPos.y <= transform.y + transform.height
             if (withinBounds) {
-                onTouchLogic()
+                if (uiManager.tapCount < uiManager.maxTaps) {
+                    uiManager.updateMaxTapsLabel()
+                    onTouchLogic()
+                }
+                else
+                    uiManager.gameLost()
             }
         }
     }

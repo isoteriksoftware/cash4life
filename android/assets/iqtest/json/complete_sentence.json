@@ -1,10 +1,78 @@
 {
-  "sentences": [
-    "The place is far/is{was, on, under}",
-    "The fish lives under the sea/the{in, on, from}",
-    "Kaduna is a state in Nigeria/a/in{was, must, miss}",
-    "Computer programming is used to build applications/is/programming{was, in, language, analyzer}",
-    "Orange is a fruit and color/color{snack, beverage, food}",
-    "Earth revolves around the sun/revolves/the{rotates, moves, jumps, under, beneath}"
+  "categories": [
+    {
+      "sentence": "The place _ far",
+      "missing": [
+        "is"
+      ],
+      "options": [
+        "was",
+        "on",
+        "under"
+      ]
+    },
+    {
+      "sentence": "The fish lives under _ sea",
+      "missing": [
+        "the"
+      ],
+      "options": [
+        "in",
+        "on",
+        "from"
+      ]
+    },
+    {
+      "sentence": "Kaduna is _ state _ Nigeria",
+      "missing": [
+        "a",
+        "in"
+      ],
+      "options": [
+        "was",
+        "must",
+        "from",
+        "miss"
+      ]
+    },
+    {
+      "sentence": "Computer _ is used _ build applications",
+      "missing": [
+        "programming",
+        "to"
+      ],
+      "options": [
+        "for",
+        "in",
+        "language",
+        "analyzer"
+      ]
+    },
+    {
+      "sentence": "Orange is a fruit and _",
+      "missing": [
+        "color"
+      ],
+      "options": [
+        "snack",
+        "beverage",
+        "food",
+        "analyzer"
+      ]
+    },
+    {
+      "sentence": "Earth _ around _ sun",
+      "missing": [
+        "revolves",
+        "the"
+      ],
+      "options": [
+        "rotates",
+        "moves",
+        "jumps",
+        "beneath",
+        "over"
+      ]
+    }
   ]
 }

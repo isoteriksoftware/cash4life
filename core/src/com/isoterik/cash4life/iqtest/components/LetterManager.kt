@@ -13,14 +13,17 @@ class LetterManager : Component() {
     var missingLetters: Array<Char> = Array()
 
     fun onOptionTouched(optionTouched: LetterOption) {
+        val optionTouchedGameObject = optionTouched.gameObject
+        optionTouched.removeComponent(LetterOption::class.java)
+
         val letterOnTouch = optionTouched.character
+
         if (letterOnTouch == missingLetters[0]) {
             val moveToPosition = missingLettersGameObjects[0].transform.position
-            val actorGameObject: ActorGameObject = optionTouched.gameObject as ActorGameObject
+            val actorGameObject: ActorGameObject = optionTouchedGameObject as ActorGameObject
             actorGameObject.actorTransform.actor.addAction(Actions.moveTo(
                 moveToPosition.x, moveToPosition.y, 1f, Interpolation.pow5Out
             ))
-            optionTouched.gameObject.removeComponent(LetterOption::class.java)
 
             missingLetters.removeIndex(0)
             removeGameObject(missingLettersGameObjects[0])
@@ -30,6 +33,17 @@ class LetterManager : Component() {
                 Timer.schedule(myTimerTask, 1.5f, 0f, 0)
             }
         }
+        else {
+            val uiManager = scene.findGameObject("uiManager").getComponent(UIManager::class.java)
+            if (uiManager.tapCount >= uiManager.maxTaps) {
+                println(2)
+                uiManager.gameLost()
+            }
+
+            removeGameObject(optionTouchedGameObject)
+            //optionTouchedGameObject.addComponent(optionTouched)
+        }
+
     }
 
     private val myTimerTask: Timer.Task = object : Timer.Task() {

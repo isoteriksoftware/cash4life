@@ -19,38 +19,34 @@ import io.github.isoteriktech.xgdx.utils.GameWorldUnits
 class CompleteSpelling : Scene() {
     private var levelTime: Float = 0.0f
 
-    lateinit var userManagerGameObject: GameObject
-    lateinit var userManager: UserManager
+    private lateinit var userManager: UserManager
 
-    lateinit var uiManagerGameObject: GameObject
-    lateinit var uiManager: UIManager
+    private lateinit var uiManager: UIManager
 
-    lateinit var gameManagerGameObject: GameObject
-    lateinit var spellingGameManager: SpellingGameManager
+    private lateinit var spellingGameManager: SpellingGameManager
 
-    lateinit var letterManagerGameObject: GameObject
-    lateinit var letterManager: LetterManager
+    private lateinit var letterManager: LetterManager
 
     private fun initManagers() {
-        userManagerGameObject = GameObject()
+        val userManagerGameObject = GameObject()
         userManagerGameObject.tag = "userManager"
         userManager = UserManager()
         userManagerGameObject.addComponent(userManager)
         addGameObject(userManagerGameObject)
 
-        uiManagerGameObject = GameObject()
+        val uiManagerGameObject = GameObject()
         uiManagerGameObject.tag = "uiManager"
-        uiManager = UIManager(xGdx)
+        uiManager = UIManager(xGdx, 0)
         uiManagerGameObject.addComponent(uiManager)
         addGameObject(uiManagerGameObject)
 
-        letterManagerGameObject = GameObject()
+        val letterManagerGameObject = GameObject()
         letterManagerGameObject.tag = "letterManager"
         letterManager = LetterManager()
         letterManagerGameObject.addComponent(letterManager)
         addGameObject(letterManagerGameObject)
 
-        gameManagerGameObject = GameObject()
+        val gameManagerGameObject = GameObject()
         gameManagerGameObject.tag = "gameManager"
         spellingGameManager = SpellingGameManager()
         gameManagerGameObject.addComponent(spellingGameManager)

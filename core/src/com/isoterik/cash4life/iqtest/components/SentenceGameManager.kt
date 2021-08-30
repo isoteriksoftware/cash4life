@@ -5,17 +5,18 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.utils.Array
 import com.isoterik.cash4life.GlobalConstants
 import com.isoterik.cash4life.GlobalUtil
+import com.isoterik.cash4life.UserManager
 import com.isoterik.cash4life.iqtest.IQTestSplash
+import com.isoterik.cash4life.iqtest.utils.Sentence
 import io.github.isoteriktech.xgdx.Component
 import io.github.isoteriktech.xgdx.GameObject
 import io.github.isoteriktech.xgdx.Transform
 import io.github.isoteriktech.xgdx.XGdx
+import io.github.isoteriktech.xgdx.x2d.components.renderer.SpriteRenderer
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirection
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.random.Random
 
 class SentenceGameManager : Component() {
     private val whiteLettersAtlas = XGdx.instance().assets.getAtlas(
@@ -25,45 +26,74 @@ class SentenceGameManager : Component() {
         GlobalConstants.IQ_TEST_ASSETS_HOME + "/spritesheets/black.atlas"
     )
 
-    private var sentencesArrayCount = 0
-    var sentencesArray = Array<String>()
+    private val REWARD_AMOUNT = 10000f
+
+    var sentences = ArrayList<Sentence.Category>()
 
     lateinit var xGdx: XGdx
 
-    //lateinit var letterManager: LetterManager
+    private lateinit var uiManager: UIManager
+    private lateinit var sentenceManager: SentenceManager
+
+    private var missingOptionTransforms = Array<Transform>()
+    private var wordsFromMissingOptionsTransforms = Array<Array<Transform>>()
 
     fun init() {
-        //letterManager = gameObject.hostScene.findGameObject("letterManager").getComponent(LetterManager::class.java)
+        uiManager = scene.findGameObject("uiManager").getComponent(UIManager::class.java)
+        sentenceManager = scene.findGameObject("sentenceManager").getComponent(SentenceManager::class.java)
     }
 
     fun startLevel() {
-        if (sentencesArrayCount >= sentencesArray.size) {
-            gameWon()
+        if (sentences.size <= 0) {
+            uiManager.gameFinished()
+            scene.findGameObject("userManager").getComponent(UserManager::class.java).deposit(REWARD_AMOUNT)
             return
         }
 
         clearScreen()
 
-        val sentenceToFind = sentencesArray[sentencesArrayCount++]
+        uiManager.updateLevelText()
 
-        val sentence = sentenceToFind.substring(0, sentenceToFind.indexOf('/'))
-        println(sentence)
-        val missingWords = getMissingWords(sentenceToFind)
-        println(missingWords)
-        val options = getOptions(sentenceToFind)
-        println(options)
+        val sentenceToFind = sentences.removeAt(0)
 
-        val strippedSentence = stripSentence(sentence, missingWords)
-        val strippedSentenceGameObjects = getStrippedSentenceGameObjects(strippedSentence)
+        val sentence = sentenceToFind.sentence
+        val missingWords = sentenceToFind.missing
+        val options = sentenceToFind.options
+
+        uiManager.setTaps(missingWords.size)
+        sentenceManager.missingWords = arrayFromArrayList(missingWords)
+
+        val strippedSentenceGameObjects = createStrippedSentenceGameObjects(sentence)
+        val strippedSentenceTransforms = getTransformsFromGameObjects(strippedSentenceGameObjects)
+
+        sentenceManager.missingOptionTransforms = missingOptionTransforms
+        sentenceManager.wordFromMissingOptionsTransforms = wordsFromMissingOptionsTransforms
+
+        val optionsCombinedGameObjects = createCombinedOptionsGameObjects(missingWords, options)
+        val optionsCombinedTransforms = getTransformsFromGameObjectsArrayed(optionsCombinedGameObjects)
+
+        val singleOptionsGameObjects = asSingleArray(optionsCombinedGameObjects)
+        val singleOptionsTransforms = asSingleArrayArrayed(optionsCombinedTransforms)
+
+        resizeTransforms(strippedSentenceTransforms, 0.1f)
+        val yPosition = (scene.gameWorldUnits.worldHeight - strippedSentenceTransforms[0].height) / 2f
+        horizontalDistributeEvenly(strippedSentenceTransforms, 5f)
+
+        GlobalUtil.resizeTransforms(singleOptionsTransforms, 0.1f)
+        horizontalDistributeEvenly(singleOptionsTransforms, 1.5f)
+
+        addGameObjects(strippedSentenceGameObjects)
+        addGameObjects(singleOptionsGameObjects)
     }
 
-    private fun gameWon() {
-        xGdx.setScene(
-            IQTestSplash(), SceneTransitions.slide(1f, SceneTransitionDirection.UP,
-                true, Interpolation.pow5Out))
+    private fun arrayFromArrayList(arrayList: ArrayList<String>): Array<String> {
+        val array = Array<String>()
+        for (list in arrayList) array.add(list)
+        return array
     }
 
-    private fun clearScreen() {
+    fun clearScreen() {
+        removeGameObjects(scene.findGameObjects("missing"))
         removeGameObjects(scene.findGameObjects("blackLetter"))
         removeGameObjects(scene.findGameObjects("whiteLetter"))
     }
@@ -78,67 +108,125 @@ class SentenceGameManager : Component() {
             addGameObject(gameObject)
     }
 
-    private fun getMissingWords(sentence: String): Array<String> {
-        val substringIndices = HashMap<Int, Int>()
-        var start = 0
-        var started = false
-        for ((index, char) in sentence.withIndex()) {
-            if (start == 0 && (char == '/' || started)) {
-                start = index + 1
-                started = false
-            }
-            else if (start > 0 && (char == '/' || char == '{')) {
-                substringIndices.put(start, index)
-                start = 0
-                started = true
-            }
-        }
-
-        val words = Array<String>()
-        for (startIndex in substringIndices.keys) {
-            val word = sentence.substring(startIndex, substringIndices.getValue(startIndex))
-            words.add(word)
-        }
-
-        return words
-    }
-
-    private fun getOptions(sentence: String): Array<String> {
-        val start = sentence.indexOf('{') + 1
-        val stop = sentence.indexOf('}')
-        val stripped = sentence.substring(start, stop).replace(",", "")
-
-        val optionsList = stripped.split(" ")
-        val options = Array<String>()
-        for (option in optionsList) {
-            options.add(option)
-        }
-
-        return options
-    }
-
-    private fun stripSentence(sentence: String, missingWords: Array<String>): String {
-        for (word in missingWords) {
-            sentence.replace(word, "?")
-        }
-
-        return sentence
-    }
-
-    private fun getStrippedSentenceGameObjects(sentence: String): ArrayList<Array<GameObject>> {
-        val result = ArrayList<Array<GameObject>>()
-
-        return result
-    }
-
-    private fun createStrippedWordGameObjects(strippedWord: String): Array<GameObject> {
-        val letterGameObjects = Array<GameObject>()
+    private fun createStrippedSentenceGameObjects(strippedWord: String): Array<GameObject> {
+        val gameObjects = Array<GameObject>()
         for (letter in strippedWord) {
+            if (letter == '_') {
+
+                val missingGameObject = scene.newSpriteObject(xGdx.assets.getTexture(
+                    "${GlobalConstants.IQ_TEST_ASSETS_HOME}/images/fill_black.png"
+                ))
+                missingGameObject.transform.setSize(0.3f, 0.3f)
+                missingGameObject.tag = "missing"
+                missingOptionTransforms.add(missingGameObject.transform)
+                gameObjects.add(missingGameObject)
+
+                wordsFromMissingOptionsTransforms.add(Array())
+                for (wordFromArray in wordsFromMissingOptionsTransforms) {
+                    if (wordFromArray.size > 0) wordFromArray.add(missingGameObject.transform)
+                }
+
+                continue
+            }
             val letterGameObject = createLetterGameObject(letter, blackLettersAtlas, false)
-            letterGameObjects.add(letterGameObject)
+            if (letter == ' ') letterGameObject.getComponent(SpriteRenderer::class.java).isVisible = false
+
+            gameObjects.add(letterGameObject)
+
+            for (wordFromArray in wordsFromMissingOptionsTransforms) {
+                wordFromArray.add(letterGameObject.transform)
+            }
         }
 
-        return letterGameObjects
+        return gameObjects
+    }
+
+    private fun createCombinedOptionsGameObjects(missingWords: ArrayList<String>, options: ArrayList<String>): Array<Array<GameObject>> {
+        val result = Array<GameObject>()
+
+        for (missing in missingWords) {
+            val neighbours = Array<GameObject>()
+            for (char in missing) {
+                val gameObject = createLetterGameObject(char, whiteLettersAtlas, true)
+                gameObject.addComponent(SentenceOption())
+                neighbours.add(gameObject)
+                result.add(gameObject)
+            }
+
+            var i = 0
+            while (i < neighbours.size) {
+                var j = 0
+                val component = neighbours[i].getComponent(SentenceOption::class.java)
+                val size = neighbours.size
+                while (j < size) {
+                    component.neighbours.add(neighbours[j])
+                    j++
+                }
+                component.word = missing
+                i++
+            }
+
+            val gameObject = createLetterGameObject(' ', whiteLettersAtlas, true)
+            gameObject.getComponent(SpriteRenderer::class.java).isVisible = false
+            result.add(gameObject)
+        }
+
+        for (option in options) {
+            val neighbours = Array<GameObject>()
+            for (char in option) {
+                val gameObject = createLetterGameObject(char, whiteLettersAtlas, true)
+                gameObject.addComponent(SentenceOption())
+                neighbours.add(gameObject)
+                result.add(gameObject)
+            }
+
+            var i = 0
+            while (i < neighbours.size) {
+                var j = 0
+                val component = neighbours[i].getComponent(SentenceOption::class.java)
+                val size = neighbours.size
+                while (j < size) {
+                    component.neighbours.add(neighbours[j])
+                    j++
+                }
+                component.word = option
+                i++
+            }
+
+            val gameObject = createLetterGameObject(' ', whiteLettersAtlas, true)
+            gameObject.getComponent(SpriteRenderer::class.java).isVisible = false
+            result.add(gameObject)
+        }
+
+        return shuffleOptions(result)
+    }
+
+    private fun shuffleOptions(targets: Array<GameObject>): Array<Array<GameObject>> {
+        val grouped = Array<Array<GameObject>>()
+        var tmp = Array<GameObject>()
+        for (target in targets) {
+            if (target.getComponent(SpriteRenderer::class.java).isVisible) {
+                tmp.add(target)
+            }
+            else {
+                grouped.add(tmp)
+                tmp = Array()
+            }
+        }
+
+        grouped.shuffle()
+
+        val size = grouped.size
+        var index = 1
+        while (index < (size * 2 - 1)) {
+            val empty = createLetterGameObject(' ', whiteLettersAtlas, true)
+            empty.getComponent(SpriteRenderer::class.java).isVisible = false
+            val tmp = Array<GameObject>()
+            tmp.add(empty)
+            grouped.insert(index, tmp)
+            index += 2
+        }
+        return grouped
     }
 
     private fun createLetterGameObject(letter: Char, lettersAtlas: TextureAtlas, isWhite: Boolean): GameObject {
@@ -158,20 +246,86 @@ class SentenceGameManager : Component() {
         return transforms
     }
 
-    private fun getMissingLettersGameObjects(gameObjects: Array<GameObject>, strippedWord: String): Array<GameObject> {
-        val result = Array<GameObject>()
-        for ((index, gameObject) in gameObjects.withIndex()) {
-            val isLetterMissing = strippedWord[index] == ' '
-            if (isLetterMissing)
-                result.add(gameObject)
+    private fun getTransformsFromGameObjectsArrayed(gameObjects: Array<Array<GameObject>>): Array<Array<Transform>> {
+        val transforms = Array<Array<Transform>>()
+        for (array in gameObjects) {
+            val tmp = Array<Transform>()
+            for (gameObject in array) {
+                tmp.add(gameObject.transform)
+            }
+            transforms.add(tmp)
         }
 
-        return result
+        return transforms
     }
 
     private fun addComponents(gameObjects: Array<GameObject>, componentType: Class<out Any>) {
         for (gameObject in gameObjects) {
             gameObject.addComponent(componentType.newInstance() as Component?)
+        }
+    }
+
+    private fun asSingleArray(arrays: Array<Array<GameObject>>): Array<GameObject> {
+        val result = Array<GameObject>()
+        for (array in arrays) {
+            for (gameObject in array) {
+                result.add(gameObject)
+            }
+        }
+
+        return result
+    }
+
+    private fun asSingleArrayArrayed(arrays: Array<Array<Transform>>): Array<Transform> {
+        val result = Array<Transform>()
+        for (array in arrays) {
+            for (transform in array) {
+                result.add(transform)
+            }
+        }
+
+        return result
+    }
+
+    private fun horizontalDistributeEvenly(transforms: Array<Transform>, yPosition: Float) {
+        if (transforms.isEmpty) return
+
+        val worldWidth = scene.gameWorldUnits.worldWidth
+        val transformWidth = transforms[0].width
+        val transformHeight = transforms[0].height
+
+        var xPos = 0.0f
+        var yPos = yPosition
+
+        val groupedTransforms = Stack<Transform>()
+        for (transform in transforms) {
+            if (transform.gameObject.getComponent(SpriteRenderer::class.java).isVisible) {
+                groupedTransforms.push(transform)
+                transform.setPosition(xPos, yPos)
+                xPos += transformWidth
+                if (transform.x > worldWidth) {
+                    xPos = 0.0f
+                    yPos -= (transformHeight * 1.5f)
+
+                    for (gt in groupedTransforms) {
+                        gt.setPosition(xPos, yPos)
+                        xPos += transformWidth
+                    }
+                    groupedTransforms.clear()
+                }
+            }
+            else {
+                xPos += transformWidth
+                groupedTransforms.clear()
+            }
+        }
+    }
+
+    private fun resizeTransforms(transforms: Array<Transform>, magnitude: Float) {
+        for (transform in transforms) {
+            if (transform.gameObject.tag == "missing") continue
+            val size = transform.size
+            transform.setSize(size.y * magnitude, size.y * magnitude)
         }
     }
 }

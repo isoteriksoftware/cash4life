@@ -29,6 +29,8 @@ class IQTestSplash : Scene() {
 
     private lateinit var timeAndPrice: HashMap<Float, Int>
 
+    var sceneIndex = -1
+
     init {
         initializeManagers()
 
@@ -69,6 +71,7 @@ class IQTestSplash : Scene() {
         GlobalUtil.resizeUI(completeSpellingBtn, 0.5f)
         completeSpellingBtn.addListener(object: ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                sceneIndex = 0
                 gamePlayScene = CompleteSpelling()
                 buyTime(Constants.SPELLING_TIME_AND_PRICES)
             }
@@ -81,6 +84,7 @@ class IQTestSplash : Scene() {
         GlobalUtil.resizeUI(completeSentenceBtn, 0.5f)
         completeSentenceBtn.addListener(object: ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                sceneIndex = 1
                 gamePlayScene = CompleteSentence()
                 buyTime(Constants.SENTENCE_TIME_AND_PRICES)
             }
@@ -137,7 +141,9 @@ $spaces$price naira"""
 
             timeAndPricesButton[i]!!.addListener(object : ChangeListener() {
                 override fun changed(event: ChangeEvent, actor: Actor) {
-                    (gamePlayScene as CompleteSpelling).setTime(time)
+                    if (sceneIndex == 0) (gamePlayScene as CompleteSpelling).setTime(time)
+                    else if (sceneIndex == 1) (gamePlayScene as CompleteSentence).setTime(time)
+
                     userManager.withdraw(price.toFloat())
                     //userManager.reset()
                     canvas.actors.removeValue(window, true)
@@ -200,7 +206,8 @@ $spaces$price naira"""
         xGdx.setScene(
             gamePlayScene, SceneTransitions.slide(1f, SceneTransitionDirection.UP,
                 true, Interpolation.pow5Out))
-        (gamePlayScene as CompleteSpelling).init()
+        if (sceneIndex == 0) (gamePlayScene as CompleteSpelling).init()
+        else if (sceneIndex == 1) (gamePlayScene as CompleteSentence).init()
     }
 
     private fun timeToString(timeInMins: Float): String? {

@@ -18,9 +18,9 @@ public final class Constants {
 
     private void loadTimeAndPrices() {
         timeAndPrice.put(30f, 500);
-        timeAndPrice.put(60f, 1000);
-        timeAndPrice.put(120f, 2000);
-        timeAndPrice.put(180f, 3000);
+        //timeAndPrice.put(60f, 1000);
+        //timeAndPrice.put(120f, 2000);
+        //timeAndPrice.put(180f, 3000);
     }
 
     public HashMap<Float, Integer> getTimeAndPrice() {

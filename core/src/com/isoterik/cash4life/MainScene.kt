@@ -13,7 +13,7 @@ class MainScene : Scene() {
     override fun transitionedToThisScene(previousScene: Scene?) {
         Timer.post(object : Timer.Task() {
             override fun run() {
-                xGdx.setScene(IQTestSplash(), SceneTransitions.slice(1f, SceneTransitionDirection.UP_DOWN,
+                xGdx.setScene(CashPuzzlesSplash(), SceneTransitions.slice(1f, SceneTransitionDirection.UP_DOWN,
                         15, Interpolation.pow5))
             }
         })

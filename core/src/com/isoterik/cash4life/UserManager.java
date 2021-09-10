@@ -7,6 +7,7 @@ import io.github.isoteriktech.xgdx.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 public class UserManager extends Component {
     private User user;
@@ -45,6 +46,11 @@ public class UserManager extends Component {
         save();
     }
 
+    public void setLastPlayedDate(Date date) {
+        user.setLastPlayedDate(date.toString());
+        save();
+    }
+
     public void save() {
         new Json().toJson(user, getJsonFile());
     }
@@ -54,7 +60,8 @@ public class UserManager extends Component {
                 "",
                 "",
                 "",
-                10000
+                10000,
+                null
         );
         new Json().toJson(defaultState, getJsonFile());
     }

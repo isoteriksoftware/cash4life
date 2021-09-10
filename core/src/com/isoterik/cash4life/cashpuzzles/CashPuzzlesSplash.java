@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.isoterik.cash4life.GlobalConstants;
 import com.isoterik.cash4life.UserManager;
@@ -19,6 +20,7 @@ import io.github.isoteriktech.xgdx.ui.ActorAnimation;
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirection;
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions;
 
+import java.text.ParseException;
 import java.util.*;
 
 public class CashPuzzlesSplash extends Scene {
@@ -94,12 +96,16 @@ public class CashPuzzlesSplash extends Scene {
         newGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                //userManager.deposit(10000);
+                //userManager.reset();
                 if (storage.isSaved()) {
                     popUpNewGameDialog();
                 }
                 else {
-                    popUpBuyTimeWindow();
+                    try {
+                        popUpBuyTimeWindow();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -173,7 +179,11 @@ public class CashPuzzlesSplash extends Scene {
         yesBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popUpBuyTimeWindow();
+                try {
+                    popUpBuyTimeWindow();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 canvas.getActors().removeValue(window, true);
             }
         });
@@ -203,7 +213,7 @@ public class CashPuzzlesSplash extends Scene {
         ActorAnimation.instance().slideIn(window, ActorAnimation.DOWN, .7f, Interpolation.swingOut);
     }
 
-    private void popUpBuyTimeWindow() {
+    private void popUpBuyTimeWindow() throws ParseException {
         Window window = new Window("", skin);
 
         Label accountBalanceLabel = new Label(userManager.getUser().getAccountBalanceAsString(), skin);
@@ -266,6 +276,7 @@ public class CashPuzzlesSplash extends Scene {
                     GameManager.setLevelTime(time);
                     Constants.RELOAD_TIME_PRICE = price;
                     userManager.withdraw(price);
+                    userManager.setLastPlayedDate(new Date());
                     canvas.getActors().removeValue(window, true);
                     toGamePlayScene();
                 }
@@ -281,6 +292,16 @@ public class CashPuzzlesSplash extends Scene {
         ScrollPane scrollPane = new ScrollPane(timeAndPricesTable);
         scrollPane.setScrollingDisabled(true, false);
 
+        boolean isPlayable = userManager.getUser().isPlayable();
+        Label cantPlayLabel = null;
+        if (!isPlayable) {
+            String message = "Oops! Come back after " + userManager.getUser().getWaitTimeToPlay();
+            cantPlayLabel = new Label(message, skin);
+            cantPlayLabel.setWrap(true);
+            resizeUI(cantPlayLabel);
+            cantPlayLabel.setAlignment(Align.center);
+        }
+
         //window.setDebug(true);
         window.setFillParent(true);
         window.padTop(20f).padBottom(20f).padRight(10f).padLeft(10f);
@@ -290,11 +311,22 @@ public class CashPuzzlesSplash extends Scene {
         window.add(accountBalanceLabel).right();
         window.row();
 
+        if (!isPlayable) {
+            window.add(cantPlayLabel).center().colspan(2).expandX().padTop(350f).width(cantPlayLabel.getWidth()).height(cantPlayLabel.getHeight());
+            window.row();
+
+            window.pack();
+            canvas.addActor(window);
+            ActorAnimation.instance().slideIn(window, ActorAnimation.DOWN, .7f, Interpolation.swingOut);
+
+            return;
+        }
+
         window.add(titleLabel).center().colspan(2).padTop(10f).width(titleLabel.getWidth()).height(titleLabel.getHeight());
         window.row();
 
-        window.add(reloadTime).center().colspan(2).padTop(10f);
-        window.row();
+        //window.add(reloadTime).center().colspan(2).padTop(10f);
+        //window.row();
 
         window.add(scrollPane).colspan(2).expandX().padTop(20f).width(450f);
         window.pack();

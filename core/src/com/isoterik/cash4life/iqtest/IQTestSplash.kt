@@ -145,6 +145,7 @@ $spaces$price naira"""
                     else if (sceneIndex == 1) (gamePlayScene as CompleteSentence).setTime(time)
 
                     userManager.withdraw(price.toFloat())
+                    userManager.setLastPlayedDate(Date())
                     //userManager.reset()
                     canvas.actors.removeValue(window, true)
                     toGamePlayScene()
@@ -182,7 +183,15 @@ $spaces$price naira"""
         val scrollPane = ScrollPane(timeAndPricesTable)
         scrollPane.setScrollingDisabled(true, false)
 
-        //window.setDebug(true);
+        val isPlayable = userManager.user.isPlayable
+        var cantPlayLabel: Label? = null
+        if (!isPlayable) {
+            val message = "Oops! Come back after " + userManager.user.waitTimeToPlay
+            cantPlayLabel = Label(message, skin)
+            cantPlayLabel.wrap = true
+            GlobalUtil.resizeUI(cantPlayLabel)
+            cantPlayLabel.setAlignment(Align.center)
+        }
 
         //window.setDebug(true);
         window.setFillParent(true)
@@ -192,6 +201,17 @@ $spaces$price naira"""
         window.add(closeBtn).left().width(closeBtn.width).height(closeBtn.height)
         window.add(accountBalanceLabel).right()
         window.row()
+
+        if (!isPlayable) {
+            window.add<Label>(cantPlayLabel).center().colspan(2).expandX().padTop(350f).width(
+                cantPlayLabel!!.width
+            ).height(cantPlayLabel.height)
+            window.row()
+            window.pack()
+            canvas.addActor(window)
+            ActorAnimation.instance().slideIn(window, ActorAnimation.DOWN, .7f, Interpolation.swingOut)
+            return
+        }
 
         window.add(titleLabel).center().colspan(2).padTop(10f).width(titleLabel.width).height(titleLabel.height)
         window.row()

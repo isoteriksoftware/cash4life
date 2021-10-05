@@ -72,6 +72,8 @@ class SentenceGameManager : Component() {
         val optionsCombinedGameObjects = createCombinedOptionsGameObjects(missingWords, options)
         val optionsCombinedTransforms = getTransformsFromGameObjectsArrayed(optionsCombinedGameObjects)
 
+        sentenceManager.optionsGameObjects = optionsCombinedGameObjects
+
         val singleOptionsGameObjects = asSingleArray(optionsCombinedGameObjects)
         val singleOptionsTransforms = asSingleArrayArrayed(optionsCombinedTransforms)
 

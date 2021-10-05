@@ -18,6 +18,7 @@ class SentenceManager : Component() {
 
     lateinit var missingOptionTransforms: Array<Transform>
     lateinit var wordFromMissingOptionsTransforms: Array<Array<Transform>>
+    lateinit var optionsGameObjects: Array<Array<GameObject>>
 
     override fun start() {
         worldWidth = scene.gameWorldUnits.worldWidth
@@ -88,6 +89,77 @@ class SentenceManager : Component() {
 
             removeGameObjects(optionNeighbours)
             //optionTouchedGameObject.addComponent(optionTouched)
+        }
+    }
+
+    fun showHint() {
+        var hintComponent = SentenceOption()
+        for (option in optionsGameObjects) {
+            var setBreak = false
+            for (letter in option) {
+                if (letter.hasComponent(SentenceOption::class.java)) {
+                    hintComponent = letter.getComponent(SentenceOption::class.java)
+                    if (hintComponent.word == missingWords[0]) {
+                        setBreak = true
+                        break
+                    }
+                }
+            }
+            if (setBreak) break
+        }
+
+        val optionWord = hintComponent.word
+        val optionNeighbours = hintComponent.neighbours
+
+        if (optionWord == missingWords[0]) {
+            val firstOptionLetter = optionNeighbours.first()
+            val totalOptionWidth = firstOptionLetter.transform.width * optionNeighbours.size
+
+            val missingOptionTransform = missingOptionTransforms.removeIndex(0)
+            val missingOptionTransformWidthFromScreenEdge = worldWidth - missingOptionTransform.position.x
+
+            val optionWidth = firstOptionLetter.transform.width
+            if (missingOptionTransformWidthFromScreenEdge >= totalOptionWidth) {
+                var moveToX = missingOptionTransform.position.x
+                val moveToY = missingOptionTransform.position.y
+
+                for (neighbour in optionNeighbours) {
+                    val actorGameObject: ActorGameObject = neighbour as ActorGameObject
+                    actorGameObject.actorTransform.actor.addAction(
+                        Actions.moveTo(
+                            moveToX, moveToY, 1f, Interpolation.pow5Out
+                        ))
+                    neighbour.removeComponent(SentenceOption::class.java)
+
+                    moveToX += optionWidth
+                }
+
+                horizontalDistributeEvenly(wordFromMissingOptionsTransforms.removeIndex(0), moveToX, moveToY)
+            }
+            else {
+                var moveToX = 0.0f
+                val moveToY = missingOptionTransform.position.y - (firstOptionLetter.transform.height * 1.5f)
+
+                for (neighbour in optionNeighbours) {
+                    val actorGameObject: ActorGameObject = neighbour as ActorGameObject
+                    actorGameObject.actorTransform.actor.addAction(
+                        Actions.moveTo(
+                            moveToX, moveToY, 1f, Interpolation.pow5Out
+                        ))
+                    neighbour.removeComponent(SentenceOption::class.java)
+
+                    moveToX += optionWidth
+                }
+
+                horizontalDistributeEvenly(wordFromMissingOptionsTransforms.removeIndex(0), moveToX, moveToY)
+            }
+
+            scene.removeGameObject(missingOptionTransform.gameObject)
+            missingWords.removeIndex(0)
+
+            if (missingWords.size == 0) {
+                Timer.schedule(myTimerTask, 1.5f, 0f, 0)
+            }
         }
     }
 

@@ -74,6 +74,8 @@ class SpellingGameManager : Component() {
         val letterOptionsGameObject = createLetterOptionsGameObject(missingLetters)
         val letterOptionsTransform = getTransformsFromGameObjects(letterOptionsGameObject)
 
+        letterManager.optionsGameObject = letterOptionsGameObject
+
         GlobalUtil.resizeTransforms(letterOptionsTransform, 0.15f)
         GlobalUtil.horizontalDistributeEvenly(letterOptionsTransform, 1f)
 

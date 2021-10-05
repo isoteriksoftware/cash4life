@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Timer
 import com.isoterik.cash4life.GlobalConstants
 import com.isoterik.cash4life.GlobalUtil
+import com.isoterik.cash4life.UserManager
 import com.isoterik.cash4life.iqtest.IQTestSplash
 import io.github.isoteriktech.xgdx.Component
 import io.github.isoteriktech.xgdx.XGdx
@@ -31,6 +32,9 @@ class UIManager(xGdx: XGdx, sceneIndex: Int) : Component() {
     private lateinit var levelLabel: Label
     private lateinit var timerLabel: Label
     private lateinit var maxTapsLabel: Label
+    private lateinit var hintPowerUpText: Label
+
+    private lateinit var userManager: UserManager
 
     private var timeInMins = 0f
     private var timeInSecs = 0
@@ -41,7 +45,11 @@ class UIManager(xGdx: XGdx, sceneIndex: Int) : Component() {
     var tapCount = 0
     var maxTaps = 0
 
+    private var showHintAmount = 5
+
     override fun start() {
+        userManager = scene.findGameObject("userManager").getComponent(UserManager::class.java)
+
         setupUI()
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
     }
@@ -76,6 +84,26 @@ class UIManager(xGdx: XGdx, sceneIndex: Int) : Component() {
 
         maxTapsLabel = Label("Taps: $tapCount / $maxTaps", skin)
 
+        hintPowerUpText = Label("$showHintAmount / 5", skin)
+        hintPowerUpText.color = Color.GREEN
+
+        skin = xGdx.assets.getSkin(GlobalConstants.CASH_PUZZLES_SKIN)
+
+        val hintPowerUpBtn = Button(skin, "hint")
+        hintPowerUpBtn.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                if (showHintAmount > 0) {
+                    showHintPowerUp()
+                    showHintAmount--
+                    hintPowerUpText.setText("$showHintAmount / 5")
+                } else {
+                    hintPowerUpBtn.isVisible = false
+                    hintPowerUpText.isVisible = false
+                }
+            }
+        })
+        GlobalUtil.resizeUI(hintPowerUpBtn, 0.3f)
+
         val table = Table()
         //table.debug = true;
         table.setFillParent(true)
@@ -88,6 +116,10 @@ class UIManager(xGdx: XGdx, sceneIndex: Int) : Component() {
         table.row()
 
         table.add(maxTapsLabel).left().expandX().padTop(10f)
+        table.add(hintPowerUpBtn).right().expandX().colspan(2).padTop(10f).width(hintPowerUpBtn.width).height(hintPowerUpBtn.height)
+        table.row()
+
+        table.add(hintPowerUpText).right().expandX().colspan(3)
         table.row()
 
         canvas.addActor(table)
@@ -195,7 +227,7 @@ class UIManager(xGdx: XGdx, sceneIndex: Int) : Component() {
             scene.findGameObject("gameManager").getComponent(SentenceGameManager::class.java).clearScreen()
 
         val window = Window("", skin)
-        val labelTitle = "OOPS! TIME'S UP.\n You can do better!"
+        val labelTitle = "Game Over! No taps remaining.\n You can do better!"
         val label = Label(labelTitle, skin)
         label.setAlignment(Align.center)
         label.wrap = true
@@ -226,5 +258,58 @@ class UIManager(xGdx: XGdx, sceneIndex: Int) : Component() {
                 1f, SceneTransitionDirection.UP, true, Interpolation.pow5Out
             )
         )
+    }
+
+    private fun showHintPowerUp() {
+        val window = Window("", skin)
+        val accountBalance: String = userManager.user.accountBalanceAsString
+        val showHintPrice = 50
+        val labelTitle =
+            "Account Balance: $accountBalance\n\nUse Hint?\n This will cost you N$showHintPrice!"
+        val label = Label(labelTitle, skin)
+        label.setAlignment(Align.center)
+        label.wrap = true
+        val yesBtn = Button(skin, "yes")
+        GlobalUtil.resizeUI(yesBtn, 0.5f)
+        val noBtn = Button(skin, "no")
+        GlobalUtil.resizeUI(noBtn, 0.5f)
+        yesBtn.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                if (userManager.user.accountBalance >= showHintPrice) {
+                    canvas.actors.removeValue(window, true)
+                    userManager.withdraw(showHintPrice.toFloat())
+                    if (sceneIndex == 0)
+                        scene.findGameObject("letterManager").getComponent(LetterManager::class.java).showHint()
+                    else
+                        scene.findGameObject("sentenceManager").getComponent(SentenceManager::class.java).showHint()
+                } else {
+                    window.removeActor(yesBtn)
+                    window.removeActor(noBtn)
+                    label.setText("Insufficient Balance")
+                    Timer.schedule(object : Timer.Task() {
+                        override fun run() {
+                            canvas.actors.removeValue(window, true)
+                        }
+                    }, 1f, 0f, 0)
+                }
+            }
+        })
+        noBtn.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                canvas.actors.removeValue(window, true)
+            }
+        })
+
+        //window.setDebug(true);
+        window.setFillParent(true)
+        window.padTop(20f).padBottom(20f).padRight(10f).padLeft(10f)
+        window.center()
+        window.add(label).center().expandX().colspan(2).padBottom(20f)
+        window.row()
+        window.add(noBtn).expandX().center().width(noBtn.width).height(noBtn.height)
+        window.add(yesBtn).expandX().center().width(yesBtn.width).height(yesBtn.height)
+        window.pack()
+        canvas.addActor(window)
+        ActorAnimation.instance().slideIn(window, ActorAnimation.DOWN, .7f, Interpolation.swingOut)
     }
 }

@@ -48,7 +48,7 @@ public class UIManager extends Component {
     private float reloadTimePrice;
     private int reloadTimeCount;
 
-    private int showHintAmount = 3;
+    private int showHintAmount = 10;
 
     public UIManager(XGdx xGdx) {
         this.xGdx = xGdx;
@@ -156,7 +156,7 @@ public class UIManager extends Component {
 
         timerLabel = new Label("00:00", skin);
 
-        hintPowerUpText = new Label(showHintAmount + " / 3", skin);
+        hintPowerUpText = new Label(showHintAmount + " / 10", skin);
         hintPowerUpText.setColor(Color.GREEN);
 
         Button hintPowerUpBtn = new Button(skin, "hint");
@@ -189,7 +189,7 @@ public class UIManager extends Component {
         table.add(categoryNameLabel).left().expandX().colspan(3).padTop(20f);
         table.row();
 
-        table.add(hintPowerUpBtn).center().colspan(3).expandX().padTop(520).width(hintPowerUpBtn.getWidth()).height(hintPowerUpBtn.getHeight());
+        table.add(hintPowerUpBtn).center().colspan(3).expandX().padTop(525).width(hintPowerUpBtn.getWidth()).height(hintPowerUpBtn.getHeight());
         table.row();
 
         table.add(hintPowerUpText).center().expandX().colspan(3).padTop(5f);

@@ -1,0 +1,102 @@
+{
+  BitmapFont: {
+    font: {
+      file: Microsoft Yi Baiti Regular.fnt
+    }
+    font2: {
+      file: Estrangelo Edessa Regular.fnt
+    }
+  }
+  Color: {
+    orange: {
+      r: 0.9490196
+      g: 0.4588235
+      b: 0.3098039
+      a: 1
+    }
+    grey: {
+      r: 0.2392157
+      g: 0.2274509
+      b: 0.2274509
+      a: 1
+    }
+    white: {
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    }
+    black: {
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    }
+  }
+  ButtonStyle: {
+    accept: {
+      up: Accept
+    }
+    exit: {
+      up: Decline
+    }
+    play: {
+      up: Play
+    }
+    profile: {
+      up: Profile
+    }
+    settings: {
+      up: Settings
+    }
+    star: {
+      up: Star
+    }
+  }
+  CheckBoxStyle: {
+    default: {
+      checkboxOn: Checkbox_Checkmark
+      checkboxOff: Checkbox_Press
+      font: font
+      fontColor: grey
+    }
+  }
+  LabelStyle: {
+    default: {
+      font: font
+      fontColor: orange
+    }
+    window-header: {
+      font: font
+      fontColor: orange
+      background: Window_Header
+    }
+    button-square-background: {
+      font: font
+      fontColor: orange
+      background: Button_Square_136_Background
+    }
+  }
+  TextButtonStyle: {
+    default: {
+      font: font
+      fontColor: orange
+      up: Store_Item_Background
+    }
+  }
+  TextFieldStyle: {
+    default: {
+      font: font
+      fontColor: grey
+      focusedFontColor: orange
+      background: Input_Background
+      focusedBackground: Input_Focus
+    }
+  }
+  WindowStyle: {
+    default: {
+      background: Window_Background
+      titleFont: font
+    }
+  }
+}

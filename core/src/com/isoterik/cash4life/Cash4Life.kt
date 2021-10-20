@@ -19,6 +19,9 @@ class Cash4Life : XGdxGame() {
     }
 
     private fun loadDoubleCashAssets() {
+        xGdx.assets.enqueueFolderContents("${GlobalConstants.SHARED_ASSETS_HOME}/images", Texture::class.java)
+        xGdx.assets.enqueueSkin(GlobalConstants.SHARED_ASSETS_SKIN)
+
         xGdx.assets.enqueueFolderContents("${GlobalConstants.DOUBLE_CASH_ASSETS_HOME}/images", Texture::class.java)
         xGdx.assets.enqueueAtlas("${GlobalConstants.DOUBLE_CASH_ASSETS_HOME}/spritesheets/cards.atlas")
         xGdx.assets.enqueueSkin(GlobalConstants.DOUBLE_CASH_SKIN)

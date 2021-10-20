@@ -121,9 +121,15 @@ public class CashPuzzlesSplash extends Scene {
         });
         resizeUI(continueBtn);
 
-        Button settingsBtn = new Button(skin, "settings");
-        settingsBtn.setColor(Color.GREEN);
-        resizeUI(settingsBtn);
+        Button backBtn = new Button(skin, "back");
+        backBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                xGdx.sceneManager.revertToPreviousScene();
+            }
+        });
+        backBtn.setColor(Color.GREEN);
+        resizeUI(backBtn);
 
         Label accountBalanceLabel = new Label(userManager.getUser().getAccountBalanceAsString(), skin);
         accountBalanceLabel.setFontScale(0.7f);
@@ -135,7 +141,7 @@ public class CashPuzzlesSplash extends Scene {
         table.padTop(20f).padBottom(20f).padRight(10f).padLeft(10f);
         table.top();
 
-        table.add(settingsBtn).left().expandX().width(settingsBtn.getWidth()).height(settingsBtn.getHeight());
+        table.add(backBtn).left().expandX().width(backBtn.getWidth()).height(backBtn.getHeight());
         table.add(accountBalanceLabel).right().expandX();
         table.row();
 

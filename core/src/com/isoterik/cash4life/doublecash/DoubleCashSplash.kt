@@ -65,11 +65,11 @@ class DoubleCashSplash : Scene() {
             }
         })
 
-        val btnQuit = Button(skin, "quit")
-        btnQuit.addListener(object : ChangeListener() {
+        val btnBack = Button(skin, "quit")
+        btnBack.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 Util.playClickSound()
-                this@DoubleCashSplash.xGdx.app.exit()
+                xGdx.sceneManager.revertToPreviousScene()
             }
         })
 
@@ -79,7 +79,7 @@ class DoubleCashSplash : Scene() {
         tbl.row()
         tbl.add(btnHelp)
         tbl.add<Button>(btnSound)
-        tbl.add(btnQuit)
+        tbl.add(btnBack)
         root.left()
         root.add(logo).left().expandX().padLeft(50f)
         root.add(tbl).expand().fill()

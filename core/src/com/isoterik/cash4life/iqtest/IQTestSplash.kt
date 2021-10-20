@@ -90,10 +90,23 @@ class IQTestSplash : Scene() {
             }
         })
 
+        skin = xGdx.assets.getSkin(GlobalConstants.CASH_PUZZLES_SKIN)
+        val backBtn = Button(skin, "back")
+        backBtn.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                xGdx.sceneManager.revertToPreviousScene()
+            }
+        })
+        backBtn.color = Color.GREEN
+        GlobalUtil.resizeUI(backBtn, 0.5f)
+
         val table = Table()
         table.setFillParent(true)
+        table.top().padTop(20f).padBottom(20f).padRight(10f).padLeft(10f)
 
-        table.top()
+        table.add(backBtn).left().expandX().width(backBtn.width).height(backBtn.height)
+        table.row()
+
         table.add(completeSpellingBtn).center().width(completeSpellingBtn.width).height((completeSpellingBtn.height)).padTop(300f)
         table.row()
         table.add(completeSentenceBtn).center().width(completeSentenceBtn.width).height((completeSentenceBtn.height)).padTop(50f)

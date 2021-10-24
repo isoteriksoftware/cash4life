@@ -44,6 +44,6 @@ class MainScene : Scene() {
         canvas.addActor(background)
 
         uiHelper = UIHelper(canvas, xGdx)
-        uiHelper!!.showLogin()
+        uiHelper!!.showRegister()
     }
 }

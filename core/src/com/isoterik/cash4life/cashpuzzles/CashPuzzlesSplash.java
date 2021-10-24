@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.isoterik.cash4life.GlobalConstants;
+import com.isoterik.cash4life.MainScene;
 import com.isoterik.cash4life.UserManager;
 import com.isoterik.cash4life.cashpuzzles.components.managers.GameManager;
 import com.isoterik.cash4life.cashpuzzles.components.managers.StorageManager;
@@ -125,7 +126,7 @@ public class CashPuzzlesSplash extends Scene {
         backBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                xGdx.sceneManager.revertToPreviousScene();
+                xGdx.setScene(new MainScene());
             }
         });
         backBtn.setColor(Color.GREEN);

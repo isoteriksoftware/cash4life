@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import com.isoterik.cash4life.GlobalConstants
 import com.isoterik.cash4life.GlobalUtil
+import com.isoterik.cash4life.MainScene
 import com.isoterik.cash4life.UserManager
 import com.isoterik.cash4life.iqtest.scenes.CompleteSentence
 import com.isoterik.cash4life.iqtest.scenes.CompleteSpelling
@@ -94,7 +95,7 @@ class IQTestSplash : Scene() {
         val backBtn = Button(skin, "back")
         backBtn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                xGdx.sceneManager.revertToPreviousScene()
+                xGdx.setScene(MainScene())
             }
         })
         backBtn.color = Color.GREEN

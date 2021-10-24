@@ -192,10 +192,10 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
             }
         })
 
-        val rememberMeCheckBox = CheckBox("Remember me", skin)
-        rememberMeCheckBox.isChecked = true
-        rememberMeCheckBox.label.setFontScale(0.7f)
-        rememberMeCheckBox.label.setAlignment(Align.right)
+        //val rememberMeCheckBox = CheckBox("Remember me", skin)
+        //rememberMeCheckBox.isChecked = true
+        //rememberMeCheckBox.label.setFontScale(0.7f)
+        //rememberMeCheckBox.label.setAlignment(Align.right)
 
         val window = Window("", skin)
         window.isMovable = false
@@ -203,8 +203,8 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
         window.add(usernameTextField).expandX().width(210f).height(50f).padTop(40f)
         window.row()
         window.add(passwordTextField).expandX().width(210f).height(50f).padTop(30f)
-        window.row()
-        window.add(rememberMeCheckBox).expandX().width(5f).height(5f).padTop(30f)
+        //window.row()
+        //window.add(rememberMeCheckBox).expandX().width(5f).height(5f).padTop(30f)
         window.pack()
 
         table.setFillParent(true)
@@ -212,6 +212,96 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
         table.padTop(200f)
 
         table.add(loginLabel).width(140f).height(70f)
+        table.row()
+
+        table.add(window)
+        table.row()
+
+        table.add(stack).size(70f)
+
+        canvas.addActor(table)
+    }
+
+    fun showRegister() {
+        val table = Table()
+
+        val registerLabel = Label("REGISTER", skin, "window-header")
+        registerLabel.setAlignment(Align.center)
+
+        val acceptLabel = Label("", skin, "button-square-background")
+        val acceptButton = Button(skin, "accept")
+        acceptButton.addListener(object: ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                table.clear()
+                showLogin()
+            }
+        })
+        val stack = Stack()
+        stack.add(acceptLabel)
+        stack.add(acceptButton)
+
+        val fullnameTextField = TextField("", skin)
+        fullnameTextField.messageText = " Fullname"
+        fullnameTextField.addListener(object: ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+
+            }
+        })
+
+        val emailTextField = TextField("", skin)
+        emailTextField.messageText = " Email"
+        emailTextField.addListener(object: ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+
+            }
+        })
+
+        val usernameTextField = TextField("", skin)
+        usernameTextField.messageText = " Username"
+        usernameTextField.addListener(object: ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+
+            }
+        })
+
+        val newPasswordTextField = TextField("", skin)
+        newPasswordTextField.messageText = " New Password"
+        newPasswordTextField.setPasswordCharacter('*')
+        newPasswordTextField.addListener(object: ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                newPasswordTextField.isPasswordMode = true
+            }
+        })
+
+        val confirmPasswordTextField = TextField("", skin)
+        confirmPasswordTextField.messageText = " Repeat Password"
+        confirmPasswordTextField.setPasswordCharacter('*')
+        confirmPasswordTextField.addListener(object: ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                confirmPasswordTextField.isPasswordMode = true
+            }
+        })
+
+        val window = Window("", skin)
+        window.isMovable = false
+        window.top()
+        window.add(fullnameTextField).expandX().width(210f).height(50f).padTop(40f)
+        window.row()
+        window.add(emailTextField).expandX().width(210f).height(50f).padTop(40f)
+        window.row()
+        window.add(usernameTextField).expandX().width(210f).height(50f).padTop(40f)
+        window.row()
+        window.add(newPasswordTextField).expandX().width(210f).height(50f).padTop(30f)
+        window.row()
+        window.add(confirmPasswordTextField).expandX().width(210f).height(50f).padTop(30f).padBottom(40f)
+        window.row()
+        window.pack()
+
+        table.setFillParent(true)
+        table.top()
+        table.padTop(100f)
+
+        table.add(registerLabel).width(200f).height(70f)
         table.row()
 
         table.add(window)

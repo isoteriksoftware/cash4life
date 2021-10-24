@@ -9,11 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import com.isoterik.cash4life.GlobalConstants
+import com.isoterik.cash4life.MainScene
 import com.isoterik.cash4life.PreferenceHelper
 import com.isoterik.cash4life.doublecash.utils.Util
 import io.github.isoteriktech.xgdx.Scene
 import io.github.isoteriktech.xgdx.ui.ActorAnimation
-import io.github.isoteriktech.xgdx.utils.GameWorldUnits
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirection
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
 
@@ -69,7 +69,7 @@ class DoubleCashSplash : Scene() {
         btnBack.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 Util.playClickSound()
-                xGdx.sceneManager.revertToPreviousScene()
+                xGdx.setScene(MainScene())
             }
         })
 

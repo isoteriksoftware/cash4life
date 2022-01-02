@@ -1,14 +1,20 @@
 package com.isoterik.cash4life
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Timer
 import com.isoterik.cash4life.cashpuzzles.CashPuzzlesSplash
 import com.isoterik.cash4life.doublecash.DoubleCashSplash
+import com.isoterik.cash4life.doublecash.utils.Util
 import com.isoterik.cash4life.iqtest.IQTestSplash
 import io.github.isoteriktech.xgdx.Scene
 import io.github.isoteriktech.xgdx.XGdx
@@ -21,6 +27,8 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
     private var skin: Skin
 
     private lateinit var splashScene: Scene
+
+
 
     fun showHomeMenu() {
         val table = Table()
@@ -101,8 +109,7 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
             }
         })
 
-        val doubleCashBtn = TextButton("Play Double Cash", skin)
-        doubleCashBtn.label.wrap = true
+        val doubleCashBtn = Button(skin, "doublecash")
         doubleCashBtn.addListener(object: ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 splashScene = DoubleCashSplash()
@@ -110,8 +117,7 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
             }
         })
 
-        val cashPuzzlesBtn = TextButton("Play Cash Puzzles", skin)
-        cashPuzzlesBtn.label.wrap = true
+        val cashPuzzlesBtn = Button(skin, "puzzles")
         cashPuzzlesBtn.addListener(object: ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 splashScene = CashPuzzlesSplash()
@@ -119,8 +125,7 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
             }
         })
 
-        val iqTestBtn = TextButton("Play IQ Test", skin)
-        iqTestBtn.label.wrap = true
+        val iqTestBtn = Button(skin, "fill")
         iqTestBtn.addListener(object: ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 splashScene = IQTestSplash()
@@ -128,20 +133,30 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
             }
         })
 
+        val basketballBtn = Button(skin, "basketball")
+        basketballBtn.addListener(object: ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                //splashScene = IQTestSplash()
+                //switchScene()
+            }
+        })
+
 
         //window.setDebug(true);
         window.setFillParent(true)
-        window.padTop(150f).padBottom(20f).padRight(10f).padLeft(10f)
+        window.padTop(150f)
         window.top()
 
-        window.add(closeBtn).left().padLeft(12f).size(50f)
+        window.add(closeBtn).left().padLeft(20f).size(50f)
         window.row()
 
-        window.add(doubleCashBtn).center().width(400f).height(100f).padTop(20f)
+        val size = 150f
+
+        window.add(doubleCashBtn).left().center().expandX().size(size).padTop(50f)
+        window.add(cashPuzzlesBtn).right().center().expandX().size(size).padTop(50f)
         window.row()
-        window.add(cashPuzzlesBtn).center().width(400f).height(100f).padTop(50f)
-        window.row()
-        window.add(iqTestBtn).center().width(400f).height(100f).padTop(50f)
+        window.add(iqTestBtn).left().center().expandX().size(size).padTop(50f)
+        window.add(basketballBtn).right().center().expandX().size(size).padTop(50f)
 
         canvas.addActor(window)
     }
@@ -174,8 +189,7 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
         stack.add(acceptButton)
 
         val usernameTextField = TextField("", skin)
-        usernameTextField.alignment = Align.center
-        usernameTextField.messageText = "Username"
+        usernameTextField.messageText = " Username"
         usernameTextField.addListener(object: ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
 
@@ -183,8 +197,7 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
         })
 
         val passwordTextField = TextField("", skin)
-        passwordTextField.alignment = Align.center
-        passwordTextField.messageText = "Password"
+        passwordTextField.messageText = " Password"
         passwordTextField.setPasswordCharacter('*')
         passwordTextField.addListener(object: ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
@@ -192,19 +205,28 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
             }
         })
 
-        //val rememberMeCheckBox = CheckBox("Remember me", skin)
-        //rememberMeCheckBox.isChecked = true
-        //rememberMeCheckBox.label.setFontScale(0.7f)
-        //rememberMeCheckBox.label.setAlignment(Align.right)
+        val noAccountLabel = Label("Don't have an account?", skin, "default2")
+        noAccountLabel.setFontScale(0.5f)
+
+        val signUpLabel = Label(" Sign up! ", skin)
+        signUpLabel.setFontScale(0.5f)
+        signUpLabel.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent, x: Float, y: Float) {
+                table.clear()
+                showRegister()
+            }
+        })
 
         val window = Window("", skin)
+        //window.debug = true
         window.isMovable = false
         window.top()
-        window.add(usernameTextField).expandX().width(210f).height(50f).padTop(40f)
+        window.add(usernameTextField).expandX().colspan(2).width(210f).height(50f).padTop(40f)
         window.row()
-        window.add(passwordTextField).expandX().width(210f).height(50f).padTop(30f)
-        //window.row()
-        //window.add(rememberMeCheckBox).expandX().width(5f).height(5f).padTop(30f)
+        window.add(passwordTextField).expandX().colspan(2).width(210f).height(50f).padTop(30f)
+        window.row().padTop(20f)
+        window.add(noAccountLabel).expandX().right()
+        window.add(signUpLabel).expandX().left()
         window.pack()
 
         table.setFillParent(true)
@@ -282,24 +304,35 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
             }
         })
 
+        val haveAccountLabel = Label("Have an account?", skin, "default2")
+        haveAccountLabel.setFontScale(0.5f)
+
+        val signInLabel = Label(" Sign in! ", skin)
+        signInLabel.setFontScale(0.5f)
+        signInLabel.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent, x: Float, y: Float) {
+                table.clear()
+                showLogin()
+            }
+        })
+
         val window = Window("", skin)
         window.isMovable = false
         window.top()
-        window.add(fullnameTextField).expandX().width(210f).height(50f).padTop(40f)
+        window.add(fullnameTextField).expandX().colspan(2).width(210f).height(50f).padTop(40f)
         window.row()
-        window.add(emailTextField).expandX().width(210f).height(50f).padTop(40f)
+        window.add(emailTextField).expandX().colspan(2).width(210f).height(50f).padTop(40f)
         window.row()
-        window.add(usernameTextField).expandX().width(210f).height(50f).padTop(40f)
+        window.add(usernameTextField).expandX().colspan(2).width(210f).height(50f).padTop(40f)
         window.row()
-        window.add(newPasswordTextField).expandX().width(210f).height(50f).padTop(30f)
+        window.add(newPasswordTextField).expandX().colspan(2).width(210f).height(50f).padTop(30f)
         window.row()
-        window.add(confirmPasswordTextField).expandX().width(210f).height(50f).padTop(30f).padBottom(40f)
-        window.row()
+        window.add(confirmPasswordTextField).expandX().colspan(2).width(210f).height(50f).padTop(30f).padBottom(40f)
         window.pack()
 
         table.setFillParent(true)
         table.top()
-        table.padTop(100f)
+        table.padTop(80f)
 
         table.add(registerLabel).width(200f).height(70f)
         table.row()

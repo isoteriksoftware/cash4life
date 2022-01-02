@@ -6,7 +6,7 @@ object GlobalConstants {
 
     // Shared Assets Config
     const val SHARED_ASSETS_HOME = "shared"
-    const val SHARED_ASSETS_SKIN        = "$SHARED_ASSETS_HOME/ui.json"
+    const val SHARED_ASSETS_SKIN        = "$SHARED_ASSETS_HOME/skin/ui.json"
     const val SHARED_PREFERENCES = "shared_app_preferences"
 
     // Double Cash Config

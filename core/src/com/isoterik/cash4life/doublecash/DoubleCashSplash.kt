@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport
 import com.isoterik.cash4life.GlobalConstants
 import com.isoterik.cash4life.MainScene
 import com.isoterik.cash4life.PreferenceHelper
+import com.isoterik.cash4life.UIScene
 import com.isoterik.cash4life.doublecash.utils.Util
 import io.github.isoteriktech.xgdx.Scene
 import io.github.isoteriktech.xgdx.ui.ActorAnimation
@@ -69,7 +70,7 @@ class DoubleCashSplash : Scene() {
         btnBack.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 Util.playClickSound()
-                xGdx.setScene(MainScene())
+                xGdx.setScene(UIScene())
             }
         })
 

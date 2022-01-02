@@ -20,7 +20,11 @@ import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirectio
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
 
 class MainScene : Scene() {
-    private var uiHelper: UIHelper? = null
+    private val myTimerTask: Timer.Task = object : Timer.Task() {
+        override fun run() {
+            xGdx.setScene(UIScene())
+        }
+    }
 
     init {
         setBackgroundColor(Color(0.1f, 0.1f, 0.2f, 1.0f))
@@ -37,13 +41,12 @@ class MainScene : Scene() {
     }
 
     private fun setUpUI() {
-        val background = Image(xGdx.assets.regionForTexture(
-            "${GlobalConstants.SHARED_ASSETS_HOME}/images/Background.png")
+        val splashImage = Image(xGdx.assets.regionForTexture(
+            "${GlobalConstants.SHARED_ASSETS_HOME}/images/splash.jpg")
         )
-        background.setSize(canvas.width, canvas.height)
-        canvas.addActor(background)
+        splashImage.setSize(canvas.width, canvas.height)
+        canvas.addActor(splashImage)
 
-        uiHelper = UIHelper(canvas, xGdx)
-        uiHelper!!.showRegister()
+        Timer.schedule(myTimerTask, 5f)
     }
 }

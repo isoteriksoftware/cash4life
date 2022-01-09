@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Timer
+import com.isoterik.cash4life.basketball.BasketballSplash
 import com.isoterik.cash4life.cashpuzzles.CashPuzzlesSplash
 import com.isoterik.cash4life.doublecash.DoubleCashSplash
 import com.isoterik.cash4life.doublecash.utils.Util
@@ -136,8 +137,8 @@ class UIHelper(private val canvas: Stage, private val xGdx: XGdx) {
         val basketballBtn = Button(skin, "basketball")
         basketballBtn.addListener(object: ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                //splashScene = IQTestSplash()
-                //switchScene()
+                splashScene = BasketballSplash()
+                switchScene()
             }
         })
 

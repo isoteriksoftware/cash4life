@@ -1,0 +1,65 @@
+{
+  BitmapFont: {
+    action_man_bold: {
+      file: action_man_bold.fnt
+    }
+    dyno_regular: {
+      file: dyno_regular.fnt
+    }
+    dyno_bold: {
+      file: dyno_bold.fnt
+    }
+  }
+  Color: {
+    orange: {
+      r: 0.9490196
+      g: 0.4588235
+      b: 0.3098039
+      a: 1
+    }
+    grey: {
+      r: 0.2392157
+      g: 0.2274509
+      b: 0.2274509
+      a: 1
+    }
+    white: {
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    }
+    black: {
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    }
+  }
+  ButtonStyle: {
+    new_game: {
+      up: ButtonB-Start-Normal
+      down: ButtonB-Start-Select
+    }
+    back: {
+      up: Button - Back - Normal
+      down: Button - Back - Select
+    }
+  }
+  LabelStyle: {
+    default: {
+      font: dyno_regular
+      fontColor: white
+    }
+    clock_image: {
+      font: dyno_regular
+      fontColor: white
+      background: Clock
+    }
+    score: {
+      font: dyno_regular
+      fontColor: white
+      background: Total Score
+    }
+  }
+}

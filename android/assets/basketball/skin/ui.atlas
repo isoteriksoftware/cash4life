@@ -1,0 +1,444 @@
+
+ui.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Button - Paused - Normal
+  rotate: false
+  xy: 1034, 107
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Clock
+  rotate: false
+  xy: 1385, 10
+  size: 235, 227
+  orig: 235, 227
+  offset: 0, 0
+  index: -1
+Energy
+  rotate: false
+  xy: 274, 2
+  size: 129, 151
+  orig: 129, 151
+  offset: 0, 0
+  index: -1
+Hand Hold
+  rotate: false
+  xy: 1034, 1236
+  size: 805, 800
+  orig: 805, 800
+  offset: 0, 0
+  index: -1
+Hand Shoot
+  rotate: false
+  xy: 1034, 434
+  size: 805, 800
+  orig: 805, 800
+  offset: 0, 0
+  index: -1
+OnAndOff
+  rotate: false
+  xy: 1385, 239
+  size: 574, 193
+  orig: 574, 193
+  offset: 0, 0
+  index: -1
+Ring Stand
+  rotate: false
+  xy: 2, 155
+  size: 1030, 1881
+  orig: 1030, 1881
+  offset: 0, 0
+  index: -1
+Star
+  rotate: false
+  xy: 1622, 37
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+Yellow Button
+  rotate: false
+  xy: 2, 24
+  size: 270, 129
+  orig: 270, 129
+  offset: 0, 0
+  index: -1
+
+ui2.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Ball Normal
+  rotate: false
+  xy: 704, 2
+  size: 700, 700
+  orig: 700, 700
+  offset: 0, 0
+  index: -1
+Ball Shoot 1
+  rotate: false
+  xy: 2, 847
+  size: 700, 700
+  orig: 700, 700
+  offset: 0, 0
+  index: -1
+Ball Shoot 3
+  rotate: false
+  xy: 2, 145
+  size: 700, 700
+  orig: 700, 700
+  offset: 0, 0
+  index: -1
+ButtonB-Home-Normal
+  rotate: false
+  xy: 704, 704
+  size: 718, 283
+  orig: 718, 283
+  offset: 0, 0
+  index: -1
+ButtonB-Home-Select
+  rotate: false
+  xy: 704, 989
+  size: 718, 283
+  orig: 718, 283
+  offset: 0, 0
+  index: -1
+Levels Font
+  rotate: false
+  xy: 704, 1274
+  size: 1058, 273
+  orig: 1058, 273
+  offset: 0, 0
+  index: -1
+Lock
+  rotate: false
+  xy: 1833, 1764
+  size: 211, 260
+  orig: 211, 260
+  offset: 0, 0
+  index: -1
+OnAndOff Empty
+  rotate: false
+  xy: 1424, 854
+  size: 574, 193
+  orig: 574, 193
+  offset: 0, 0
+  index: -1
+Ring Ball Shoot1
+  rotate: false
+  xy: 1764, 1299
+  size: 272, 248
+  orig: 272, 248
+  offset: 0, 0
+  index: -1
+Ring Normal
+  rotate: false
+  xy: 1764, 1049
+  size: 272, 248
+  orig: 272, 248
+  offset: 0, 0
+  index: -1
+Title Ribbon
+  rotate: false
+  xy: 2, 1549
+  size: 1829, 475
+  orig: 1829, 475
+  offset: 0, 0
+  index: -1
+Total Score
+  rotate: false
+  xy: 1424, 578
+  size: 543, 274
+  orig: 543, 274
+  offset: 0, 0
+  index: -1
+dyno_regular
+  rotate: false
+  xy: 1406, 64
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+
+ui3.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Ball Shoot 2
+  rotate: false
+  xy: 2, 1343
+  size: 700, 700
+  orig: 700, 700
+  offset: 0, 0
+  index: -1
+Button - Back - Normal
+  rotate: false
+  xy: 1073, 8
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - Back - Select
+  rotate: false
+  xy: 722, 8
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - Closed - Select
+  rotate: false
+  xy: 1442, 209
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button Close
+  rotate: false
+  xy: 276, 2
+  size: 255, 255
+  orig: 255, 255
+  offset: 0, 0
+  index: -1
+ButtonB-Exit-Normal
+  rotate: false
+  xy: 1218, 1475
+  size: 718, 283
+  orig: 718, 283
+  offset: 0, 0
+  index: -1
+ButtonB-Exit-Select
+  rotate: false
+  xy: 1218, 1760
+  size: 718, 283
+  orig: 718, 283
+  offset: 0, 0
+  index: -1
+ButtonB-Option-Normal
+  rotate: false
+  xy: 867, 905
+  size: 718, 283
+  orig: 718, 283
+  offset: 0, 0
+  index: -1
+ButtonB-Option-Select
+  rotate: false
+  xy: 2, 259
+  size: 718, 283
+  orig: 718, 283
+  offset: 0, 0
+  index: -1
+ButtonB-Start-Normal
+  rotate: false
+  xy: 1055, 1190
+  size: 718, 283
+  orig: 718, 283
+  offset: 0, 0
+  index: -1
+ButtonB-Start-Select
+  rotate: false
+  xy: 2, 544
+  size: 718, 283
+  orig: 718, 283
+  offset: 0, 0
+  index: -1
+Buttons-MoreGames-Normal
+  rotate: false
+  xy: 1587, 536
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Buttons-MoreGames-Select
+  rotate: false
+  xy: 704, 1204
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Buttons-Shop-Normal
+  rotate: false
+  xy: 1587, 863
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Buttons-Shop-Select
+  rotate: false
+  xy: 516, 877
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Empty-Button-B-Normal
+  rotate: false
+  xy: 722, 335
+  size: 718, 283
+  orig: 718, 283
+  offset: 0, 0
+  index: -1
+Empty-Button-B-Select
+  rotate: false
+  xy: 867, 620
+  size: 718, 283
+  orig: 718, 283
+  offset: 0, 0
+  index: -1
+Ring Ball Shoot2
+  rotate: false
+  xy: 2, 9
+  size: 272, 248
+  orig: 272, 248
+  offset: 0, 0
+  index: -1
+action_man_bold
+  rotate: false
+  xy: 704, 1531
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+dyno_bold
+  rotate: false
+  xy: 2, 829
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+
+ui4.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Button - Closed - Normal
+  rotate: false
+  xy: 353, 1637
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - Home - Normal
+  rotate: false
+  xy: 1055, 1310
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - Home - Select
+  rotate: false
+  xy: 2, 329
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - Next - Normal
+  rotate: false
+  xy: 2, 1310
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - Next - Select
+  rotate: false
+  xy: 2, 1637
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - Paused - Select
+  rotate: false
+  xy: 704, 656
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - Setting - Normal
+  rotate: false
+  xy: 2, 656
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - Setting - Select
+  rotate: false
+  xy: 704, 1637
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - Share - Normal
+  rotate: false
+  xy: 353, 1310
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - Share - Select
+  rotate: false
+  xy: 2, 983
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button - SoundOff - Select
+  rotate: false
+  xy: 1406, 1637
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Button -SoundON- Normal
+  rotate: false
+  xy: 704, 983
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Buttons-Facebook-Normal
+  rotate: false
+  xy: 353, 329
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Buttons-Facebook-Select
+  rotate: false
+  xy: 2, 2
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Buttons-Retry-Normal
+  rotate: false
+  xy: 353, 656
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Buttons-Retry-Select
+  rotate: false
+  xy: 1055, 1637
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Empty-Buttons-A-Normal
+  rotate: false
+  xy: 704, 1310
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1
+Empty-Buttons-A-Select
+  rotate: false
+  xy: 353, 983
+  size: 349, 325
+  orig: 349, 325
+  offset: 0, 0
+  index: -1

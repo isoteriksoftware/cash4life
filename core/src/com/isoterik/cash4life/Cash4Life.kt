@@ -1,6 +1,8 @@
 package com.isoterik.cash4life
 
 import com.badlogic.gdx.graphics.Texture
+import com.isoterik.cash4life.basketball.BasketballSplash
+import com.isoterik.cash4life.basketball.GamePlayScene
 import io.github.isoteriktech.xgdx.Scene
 import io.github.isoteriktech.xgdx.XGdxGame
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
@@ -15,7 +17,7 @@ class Cash4Life : XGdxGame() {
         xGdx.assets.loadAssetsNow()
 
         splashTransition = SceneTransitions.fade(1f)
-        return MainScene()
+        return GamePlayScene()
     }
 
     private fun loadDoubleCashAssets() {
@@ -36,5 +38,8 @@ class Cash4Life : XGdxGame() {
         xGdx.assets.enqueueSkin(GlobalConstants.IQ_TEST_SKIN)
         xGdx.assets.enqueueAtlas("${GlobalConstants.IQ_TEST_ASSETS_HOME}/spritesheets/white.atlas")
         xGdx.assets.enqueueAtlas("${GlobalConstants.IQ_TEST_ASSETS_HOME}/spritesheets/black.atlas")
+
+        xGdx.assets.enqueueFolderContents("${GlobalConstants.BASKETBALL_ASSETS_HOME}/images", Texture::class.java)
+        xGdx.assets.enqueueSkin(GlobalConstants.BASKETBALL_SKIN)
     }
 }

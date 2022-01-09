@@ -21,4 +21,8 @@ object GlobalConstants {
     // IQ Test Config
     const val IQ_TEST_ASSETS_HOME = "iqtest"
     const val IQ_TEST_SKIN        = "$IQ_TEST_ASSETS_HOME/skin/ui.json"
+
+    // Basketball Config
+    const val BASKETBALL_ASSETS_HOME = "basketball"
+    const val BASKETBALL_SKIN        = "$BASKETBALL_ASSETS_HOME/skin/ui.json"
 }

@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.isoterik.cash4life.GlobalConstants;
 import com.isoterik.cash4life.UIScene;
 import com.isoterik.cash4life.UserManager;
-import com.isoterik.cash4life.basketball.components.managers.GameManager;
 import io.github.isoteriktech.xgdx.GameObject;
 import io.github.isoteriktech.xgdx.Scene;
 import io.github.isoteriktech.xgdx.ui.ActorAnimation;
@@ -19,6 +18,7 @@ import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirectio
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,13 +34,13 @@ public class BasketballSplash extends Scene {
 
     private UserManager userManager;
 
-    private final HashMap<Float, Integer> timeAndPrice;
+    private final ArrayList<Constants.Data> data;
 
     public BasketballSplash() {
         initializeManagers();
 
         Constants constants = new Constants();
-        timeAndPrice = constants.getTimeAndPrice();
+        data = constants.getData();
 
         setupCamera();
         setBackgroundColor(new Color(.1f, .1f, .2f, 1f));
@@ -78,7 +78,7 @@ public class BasketballSplash extends Scene {
         resizeUI(logo);
 
         skin = this.xGdx.assets.getSkin(GlobalConstants.BASKETBALL_SKIN);
-        userManager.reset();
+        //userManager.reset();
 
         Button newGameBtn = new Button(skin, "new_game");
         newGameBtn.addListener(new ChangeListener() {
@@ -109,7 +109,7 @@ public class BasketballSplash extends Scene {
 
         Label accountBalanceLabel = new Label(userManager.getUser().getAccountBalanceAsString(), skin);
         accountBalanceLabel.setFontScale(0.7f);
-        accountBalanceLabel.setColor(Color.YELLOW);
+        accountBalanceLabel.setColor(Color.GOLD);
 
         Table table = new Table();
         //table.setDebug(true);
@@ -118,7 +118,7 @@ public class BasketballSplash extends Scene {
         table.top();
 
         table.add(backBtn).left().expandX().width(backBtn.getWidth()).height(backBtn.getHeight());
-        table.add(accountBalanceLabel).right().expandX();
+        table.add(accountBalanceLabel).right().expandX().padRight(10f);
         table.row();
 
         table.add(logo).colspan(2).expandX().width(logo.getWidth()).height(logo.getHeight()).top().padTop(200f);
@@ -177,29 +177,23 @@ public class BasketballSplash extends Scene {
         resizeUI(titleLabel);
         titleLabel.setAlignment(Align.center);
 
-        CheckBox reloadTime = new CheckBox("Reload Time?", skin);
-        //reloadTime.getCells().get(0).size(10, 10);
-        reloadTime.getLabel().setFontScale(0.7f);
-        reloadTime.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Constants.RELOAD_TIME = reloadTime.isChecked();
-            }
-        });
+        Object[] dataArray = data.toArray();
 
-        Object[] timeArray = timeAndPrice.keySet().toArray();
-        Arrays.sort(timeArray);
-
-        TextButton[] timeAndPricesButton = new TextButton[timeAndPrice.size()];
+        TextButton[] timeAndPricesButton = new TextButton[data.size()];
         String[] styleNames = new String[] {
                 "p_pink", "p_purple", "p_cyan", "p_blue", "p_green", "p_orange"
         };
         for (int i = 0; i < timeAndPricesButton.length; i++) {
-            float time = (float) timeArray[i];
-            int price = timeAndPrice.get(time);
+            Constants.Data currentData = (Constants.Data) dataArray[i];
+            int time = currentData.getTime();
+            int price = currentData.getPrice();
+            int reward = currentData.getReward();
+            int totalBalls = currentData.getTotalBalls();
+            int ballsToWin = currentData.getBallsToWin();
 
-            String spaces = "              ";
-            String displayName = spaces + timeToString(time) + "\n" + spaces + price + " naira";
+            String spaces = "    ";
+            String displayName = spaces + timeToString(time) + "  for  N" + price + "\n" +
+                    spaces + "Win "  + ballsToWin + "/" + totalBalls + "  get  N" + reward;
             String styleName = styleNames[i];
 
             timeAndPricesButton[i] = new TextButton(displayName, skin, styleName);
@@ -216,8 +210,7 @@ public class BasketballSplash extends Scene {
             timeAndPricesButton[i].addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    GameManager.setLevelTime(time);
-                    Constants.RELOAD_TIME_PRICE = price;
+                    Constants.SELECTED_DATA = currentData;
                     userManager.withdraw(price);
                     userManager.setLastPlayedDate(new Date());
                     canvas.getActors().removeValue(window, true);
@@ -237,7 +230,7 @@ public class BasketballSplash extends Scene {
 
         //window.setDebug(true);
         window.setFillParent(true);
-        window.padTop(20f).padBottom(20f).padRight(10f).padLeft(10f);
+        window.padTop(30f).padBottom(20f).padRight(20f).padLeft(20f);
         window.top();
 
         window.add(closeBtn).left().width(closeBtn.getWidth()).height(closeBtn.getHeight());
@@ -246,9 +239,6 @@ public class BasketballSplash extends Scene {
 
         window.add(titleLabel).center().colspan(2).padTop(10f).width(titleLabel.getWidth()).height(titleLabel.getHeight());
         window.row();
-
-        //window.add(reloadTime).center().colspan(2).padTop(10f);
-        //window.row();
 
         window.add(scrollPane).colspan(2).expandX().padTop(20f).width(450f);
         window.pack();

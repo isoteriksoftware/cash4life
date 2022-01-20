@@ -31,7 +31,9 @@ public class SwipeFilterComponent extends Component {
         else {
             if (doOnce) {
                 float swipeMagnitude = Math.abs(finalTouchPos.y - initialTouchPos.y);
-                basketballManager.shoot(swipeMagnitude);
+                if (swipeMagnitude == 0) return;
+
+                basketballManager.throwBall(swipeMagnitude);
 
                 swipeOngoing = false;
                 doOnce = false;

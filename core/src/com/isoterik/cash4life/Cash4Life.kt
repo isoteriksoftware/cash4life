@@ -17,7 +17,7 @@ class Cash4Life : XGdxGame() {
         xGdx.assets.loadAssetsNow()
 
         splashTransition = SceneTransitions.fade(1f)
-        return GamePlayScene()
+        return BasketballSplash()
     }
 
     private fun loadDoubleCashAssets() {

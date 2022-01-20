@@ -51,6 +51,11 @@
       font: dyno_regular
       fontColor: white
     }
+    ball_image: {
+      font: dyno_regular
+      fontColor: white
+      background: Ball Normal
+    }
     clock_image: {
       font: dyno_regular
       fontColor: white

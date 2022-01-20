@@ -25,6 +25,8 @@ import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitionDirectio
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions;
 
 public class UIManager extends Component {
+    private UserManager userManager;
+
     public float modX;
     public float modY;
 
@@ -33,6 +35,8 @@ public class UIManager extends Component {
     private Stage canvas;
 
     private Skin skin;
+
+    private int score;
 
     private Label scoreLabel;
     private Label timerLabel;
@@ -47,11 +51,13 @@ public class UIManager extends Component {
 
     @Override
     public void start() {
+        userManager = scene.findGameObject("userManager").getComponent(UserManager.class);
+
         setupUI();
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true);
 
-        timeInMins = GameManager.getLevelTime();
+        timeInMins = Constants.SELECTED_DATA.getTime();
         timeInSecs = (int) (timeInMins * 60f);
     }
 
@@ -88,6 +94,7 @@ public class UIManager extends Component {
                 timerLabel.setText(time);
             }
             else {
+                gameLost();
                 cancel();
             }
         }
@@ -116,6 +123,8 @@ public class UIManager extends Component {
         Label clockImage = new Label("", skin, "clock_image");
         resizeUI(clockImage);
 
+        Label ballImage = new Label("", skin, "ball_image");
+
         Button btnPause = new Button(skin, "back");
         //btnBack.setColor(skin.getColor("gold"));
         btnPause.addListener(new ChangeListener() {
@@ -131,10 +140,15 @@ public class UIManager extends Component {
         timeTable.add(timerLabel).padLeft(2f);
         timeTable.row();
 
+        Table remainingBallsTable = new Table();
+        remainingBallsTable.add(ballImage).left().width(30f).height(30f);
+        remainingBallsTable.add(remainingBallsLabel).padLeft(2f);
+        remainingBallsTable.row();
+
         Table table = new Table();
         //table.setDebug(true);
         table.setFillParent(true);
-        table.padTop(20f).padBottom(20f).padRight(10f).padLeft(10f);
+        table.padTop(10f).padBottom(10f).padRight(5f).padLeft(5f);
         table.top();
 
         table.add(scoreLabel).left().expandX().width(scoreLabel.getWidth()).height(scoreLabel.getHeight());
@@ -144,7 +158,7 @@ public class UIManager extends Component {
         table.add(timeTable).left().padTop(10f);
         table.row();
 
-        table.add(remainingBallsLabel).left().padTop(500f);
+        table.add(remainingBallsTable).left().padTop(570f);
 
         canvas.addActor(table);
     }
@@ -174,20 +188,22 @@ public class UIManager extends Component {
         );
     }
 
-    public void gameFinished() {
+    public void gameLost() {
         myTimerTask.cancel();
 
-        showGameWonWindow();
-    }
+        scene.removeGameObject(scene.findGameObject("swipeFilter"));
 
-    public void gameLost() {
         showGameOverWindow();
     }
 
     private void showGameWonWindow() {
+        // Switching to cash puzzles skin
+        Skin skin = this.xGdx.assets.getSkin(GlobalConstants.CASH_PUZZLES_SKIN);
+        // End of switch
+
         Window window = new Window("", skin);
 
-        String labelTitle = "CONGRATULATIONS! YOU'VE WON THE GAME.\n\n +N30,000 has been added to your account!";
+        String labelTitle = "CONGRATULATIONS! YOU'VE WON THE GAME.\n\n The reward has been added to your account!";
         Label label = new Label(labelTitle, skin, "confeti");
         label.setAlignment(Align.center);
         label.setWrap(true);
@@ -218,9 +234,13 @@ public class UIManager extends Component {
     }
 
     private void showGameOverWindow() {
+        // Switching to cash puzzles skin
+        Skin skin = this.xGdx.assets.getSkin(GlobalConstants.CASH_PUZZLES_SKIN);
+        // End of switch
+
         Window window = new Window("", skin);
 
-        String labelTitle = "OOPS! TIME'S UP.\n You can do better!";
+        String labelTitle = "OOPS! GAME OVER.\n You can do better!";
         Label label = new Label(labelTitle, skin);
         label.setAlignment(Align.center);
         label.setWrap(true);
@@ -249,7 +269,32 @@ public class UIManager extends Component {
         ActorAnimation.instance().slideIn(window, ActorAnimation.DOWN, .7f, Interpolation.swingOut);
     }
 
-    public void setRemaiiningBallsText(int count) {
+    public void setRemainingBallsText(int count) {
         remainingBallsLabel.setText(count);
+    }
+
+    public void updateScoreText() {
+        score++;
+        scoreLabel.setText(score);
+
+        if (score == Constants.SELECTED_DATA.getBallsToWin()) {
+            Timer.schedule(winTimerTask, 2);
+        }
+    }
+
+    private final Timer.Task winTimerTask = new Timer.Task() {
+        @Override
+        public void run() {
+            userManager.deposit(Constants.SELECTED_DATA.getReward());
+            gameFinished();
+        }
+    };
+
+    public void gameFinished() {
+        myTimerTask.cancel();
+
+        scene.removeGameObject(scene.findGameObject("swipeFilter"));
+
+        showGameWonWindow();
     }
 }

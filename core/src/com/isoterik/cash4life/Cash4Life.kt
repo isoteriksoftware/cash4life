@@ -1,8 +1,6 @@
 package com.isoterik.cash4life
 
 import com.badlogic.gdx.graphics.Texture
-import com.isoterik.cash4life.basketball.BasketballSplash
-import com.isoterik.cash4life.basketball.GamePlayScene
 import io.github.isoteriktech.xgdx.Scene
 import io.github.isoteriktech.xgdx.XGdxGame
 import io.github.isoteriktech.xgdx.x2d.scenes.transition.SceneTransitions
@@ -17,7 +15,7 @@ class Cash4Life : XGdxGame() {
         xGdx.assets.loadAssetsNow()
 
         splashTransition = SceneTransitions.fade(1f)
-        return BasketballSplash()
+        return MainScene()
     }
 
     private fun loadDoubleCashAssets() {
